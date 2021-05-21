@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+:root{
+  --main: #22577A;
+  --second: #38A3A5;
+  --neutral: #57CC99;
+  --light-g: #80ED99;
+  --tea-g: #C7F9CC;
+  --nero: #495867;
+  --bianco: #F7F7FF;
+}
+
+.bg-main{
+  background-color: var(--main) !important;
+  color: var(--bianco) !important;
+}
+.bg-second{
+  background-color: var(--second) !important;
+  color: var(--bianco) !important;
+}
+.bg-neutral{
+  background-color: var(--neutral) !important;
+  color: var(--bianco) !important
+}
+.bg-light-g{
+  background-color: var(--light-g) !important;
+  color: var(--nero) !important;
+
+}
+.bg-tea{
+  background-color: var(--tea-g) !important;
+  color: var(--nero) !important;
+}
+.bg-nero{
+  background-color: var(--nero) !important;
+  color: var(--bianco) !important;
+}
+.bg-bianco{
+  background-color: var(--bianco) !important;
+  color: var(--nero) !important;
+}
+
+.color-main{
+  color: var(--main) !important;
+}
+.color-second{
+  color: var(--second) !important;
+}
+.color-neutral{
+  color: var(--neutral) !important;
+}
+.color-light-g{
+  color: var(--light-g) !important;
+}
+.color-tea-g{
+  color: var(--tea-g) !important;
+}
+.color-nero{
+  color: var(--nero) !important;
+}
+.color-bianco{
+  color: var(--bianco) !important;
+}
+
+.outline-bianco{
+  border:1px solid var(--bianco) !important
+}
