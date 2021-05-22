@@ -10,7 +10,7 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
 
     const handleChange = (value) => {
         let sixHours = 60 * 60 * 6 * 1000;
-        let currentTime = new Date() - sixHours
+        let currentTime = new Date(value) - sixHours
         let date = new Date(currentTime).toJSON()
         let formattedDate = date.split('T')[0]
         console.log(formattedDate)
