@@ -2,8 +2,10 @@ import React, {useEffect, useState} from 'react'
 
 export default function CustomDatePicker({selectedDate, handleDateChange}) {
     const [test, setTest] = useState(()=>{
-        let date = new Date().toJSON()
-        return date.split('T')[0]
+        let date = new Date(value).toLocaleDateString()
+        let dateArray = date.split('/')
+        let month = dateArray[0] > 9 ? dateArray[0] : `0${dateArray[0]}`
+        return  `${dateArray[2]}-${month}-${dateArray[1]}`
     })
 
     const handleChange = (value) => {
