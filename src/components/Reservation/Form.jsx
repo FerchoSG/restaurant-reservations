@@ -131,16 +131,16 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
                 newCounter
             })
             updateReservation({
-                 date: selectedDate, data: newReservation, 
-                hour, id: reservation.id, typeOfMeal})
+                date: selectedDate, data: newReservation , 
+                hour, id: reservation.id, typeOfMeal, 
+                previousHour: reservation.hour, previousPax: reservation.pax})
                 // history.push(backTo)
                  notify_updated()
                  setLimitError(false)
             }else{
                 createReservation({
                 date: selectedDate, data: newReservation , 
-                hour, id: reservation.id, typeOfMeal, 
-                previousHour: reservation.hour, previousPax: reservation.pax})
+                hour, typeOfMeal})
                 notify_created()
                     clearForm()
         //         // history.push(backTo)
