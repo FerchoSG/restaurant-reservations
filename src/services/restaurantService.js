@@ -29,7 +29,7 @@ export async function updateReservation({date, data, hour, typeOfMeal, id, previ
     .doc(typeOfMeal)
     .collection(previousHour).doc(id).delete()
 
-    let reservationsCounter = await getReservationsCounter({date, data, hour, typeOfMeal})
+    let reservationsCounter =  await getReservationsCounter({date, time: hour, typeOfMeal})
 
     substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter})
 
