@@ -23,20 +23,26 @@ export async function createReservation({date, data, hour, typeOfMeal}){
     }
         updateReservationCounter({date, data, hour, typeOfMeal})
 }
-export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour}){
-    await db
-        .collection(date)
-        .doc(typeOfMeal)
-        .collection(previousHour)
-        .doc(id)
-        .delete()
+export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour, previousPax}){
+   
+    await db.collection(date)
+    .doc(typeOfMeal)
+    .collection(previousHour).doc(id).delete()
 
-    await db
-        .collection(date)
-        .doc(typeOfMeal)
-        .collection(hour)
-        .doc(id)
-        .set(data)
+    let reservationsCounter = await getReservationsCounter({date, data, hour, typeOfMeal})
+
+    substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter})
+
+    createReservation({date, data, hour, typeOfMeal})
+    
+}
+const substractPaxDeletedFromCounter = ({date, typeOfMeal, hour, pax, reservationsCounter})=>{
+  db
+  .collection(date)
+  .doc(typeOfMeal)
+  .collection(hour)
+  .doc('reservation-counter')
+  .update({data: Number(reservationsCounter) - Number(pax)})
 }
 
 export async function updateReservationCounter({date, data, hour, typeOfMeal}){
