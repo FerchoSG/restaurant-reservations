@@ -139,7 +139,7 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
             }else{
                 createReservation({
                 date: selectedDate, data: newReservation , 
-                hour, typeOfMeal})
+                hour, typeOfMeal, previousHour: reservation.hour})
                 notify_created()
                     clearForm()
         //         // history.push(backTo)
