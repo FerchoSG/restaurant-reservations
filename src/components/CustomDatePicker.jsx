@@ -12,7 +12,7 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
         let date = new Date(value)
         let month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
         let day = date.getDate() + 1 > 9 ? date.getDate() + 1 : `0${date.getDate() + 1}`
-        return `${date.getFullYear()}-${month}-${day}`
+        let formattedDate = `${date.getFullYear()}-${month}-${day}`
         console.log(formattedDate)
         setTest(formattedDate)
         handleDateChange(formattedDate)
