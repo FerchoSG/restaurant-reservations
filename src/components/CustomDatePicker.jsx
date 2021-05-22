@@ -11,6 +11,7 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
         let dateArray = date.split('/')
         let month = dateArray[0] > 9 ? dateArray[0] : `0${dateArray[0]}`
         let formattedDate = `${dateArray[2]}-${month}-${dateArray[1]}`
+        console.log(formattedDate)
         setTest(formattedDate)
         handleDateChange(formattedDate)
     }
