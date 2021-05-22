@@ -24,6 +24,7 @@ export async function createReservation({date, data, hour, typeOfMeal}){
         updateReservationCounter({date, data, hour, typeOfMeal})
 }
 export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour, previousPax}){
+        console.log({date, data, hour, typeOfMeal, id, previousHour, previousPax})
     await db
         .collection(date)
         .doc(typeOfMeal)
