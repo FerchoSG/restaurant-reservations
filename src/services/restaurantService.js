@@ -23,22 +23,20 @@ export async function createReservation({date, data, hour, typeOfMeal}){
     }
         updateReservationCounter({date, data, hour, typeOfMeal})
 }
-export async function updateReservation({date, data, hour, typeOfMeal, id}){
+export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour}){
     await db
         .collection(date)
         .doc(typeOfMeal)
-        .collection(hour)
+        .collection(previousHour)
         .doc(id)
-        .get()
-   
-    // const oldReservationPax = oldReservation.data().pax
+        .delete()
 
     await db
         .collection(date)
         .doc(typeOfMeal)
         .collection(hour)
         .doc(id)
-        .update(data)
+        .set(data)
 }
 
 export async function updateReservationCounter({date, data, hour, typeOfMeal}){
