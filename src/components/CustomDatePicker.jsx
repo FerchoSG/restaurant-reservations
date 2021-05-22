@@ -2,17 +2,17 @@ import React, {useEffect, useState} from 'react'
 
 export default function CustomDatePicker({selectedDate, handleDateChange}) {
     const [test, setTest] = useState(()=>{
-        let date = new Date().toLocaleDateString()
-        let dateArray = date.split('/')
-        let month = dateArray[0] > 9 ? dateArray[0] : `0${dateArray[0]}`
-        return  `${dateArray[2]}-${month}-${dateArray[1]}`
+        let date = new Date()
+        let month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+        let day = date.getDate() + 1 > 9 ? date.getDate() + 1 : `0${date.getDate() + 1}`
+        return `${date.getFullYear()}-${month}-${day}`
     })
 
     const handleChange = (value) => {
-        let date = new Date(value).toLocaleDateString()
-        let dateArray = date.split('/')
-        let month = dateArray[0] > 9 ? dateArray[0] : `0${dateArray[0]}`
-        let formattedDate = `${dateArray[2]}-${month}-${dateArray[1]}`
+        let date = new Date(value)
+        let month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+        let day = date.getDate() + 1 > 9 ? date.getDate() + 1 : `0${date.getDate() + 1}`
+        return `${date.getFullYear()}-${month}-${day}`
         console.log(formattedDate)
         setTest(formattedDate)
         handleDateChange(formattedDate)
