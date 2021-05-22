@@ -5,7 +5,7 @@ import rooms from '../../services/hotelRooms'
 import { 
     createReservation, updateReservation, 
     getReservationsLimit, getReservationsCounter, 
-    updatePaxLimit, updateReservationsPaxCounter
+    updatePaxLimit
 } 
 from '../../services/restaurantService'
 
