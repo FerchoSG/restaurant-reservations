@@ -42,7 +42,8 @@ const substractPaxDeletedFromCounter = ({date, typeOfMeal, hour, pax, reservatio
     .doc(typeOfMeal)
     .collection(hour)
     .doc('reservation-counter')
-  
+    .update({data: Number(reservationsCounter) - Number(pax)})
+}
 
 export async function updateReservationCounter({date, data, hour, typeOfMeal}){
     await db
