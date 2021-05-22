@@ -124,16 +124,11 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
 
    
         if(reservation){
-            let newCounter = (totalPaxCounter - editedPax) + pax
-            updateReservationsPaxCounter({
-                date: selectedDate,
-                typeOfMeal, hour, 
-                newCounter
-            })
+            let previousHour = localStorage.getItem('hour')
             updateReservation({
-                date: selectedDate, data: newReservation , 
-                hour, id: reservation.id, typeOfMeal, 
-                previousHour: reservation.hour, previousPax: reservation.pax})
+                date: selectedDate, data: newReservation, 
+                hour, id: reservation.id, typeOfMeal,
+                previousHour, previousPax: reservation.pax})
                 // history.push(backTo)
                  notify_updated()
                  setLimitError(false)
