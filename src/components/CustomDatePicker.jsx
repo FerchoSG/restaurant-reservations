@@ -7,8 +7,9 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
     })
 
     const handleChange = (value) => {
-        let date = new Date(value).toJSON()
-        let formattedDate = date.split('T')[0]
+        let date = new Date(value).toLocaleDateString()
+        let dateArray = date.split('/')
+        let formattedDate = `${dateArray[2]}-${dateArray[0]}-${dateArray[1]}`
         setTest(formattedDate)
         handleDateChange(formattedDate)
     }
