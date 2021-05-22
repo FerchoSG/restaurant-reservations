@@ -131,7 +131,7 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
                 newCounter
             })
             updateReservation({
-                date: selectedDate, data: newReservation, 
+                 date: selectedDate, data: newReservation, 
                 hour, id: reservation.id, typeOfMeal})
                 // history.push(backTo)
                  notify_updated()
