@@ -2,16 +2,16 @@ import React, {useEffect, useState} from 'react'
 
 export default function CustomDatePicker({selectedDate, handleDateChange}) {
     const [test, setTest] = useState(()=>{
-        let sixHours = 60 * 60 * 6 * 1000;
-        let currentTime = new Date() - sixHours
-        let date = new Date(currentTime).toJSON()
+       // let sixHours = 60 * 60 * 6 * 1000;
+        //let currentTime = new Date() - sixHours
+        let date = new Date().toJSON()
        return date.split('T')[0]
     })
 
     const handleChange = (value) => {
-        let sixHours = 60 * 60 * 6 * 1000;
-        let currentTime = new Date(value) - sixHours
-        let date = new Date(currentTime).toJSON()
+        //let sixHours = 60 * 60 * 6 * 1000;
+        //let currentTime = new Date(value) - sixHours
+        let date = new Date(value).toJSON()
         let formattedDate = date.split('T')[0]
         console.log(formattedDate)
         setTest(formattedDate)
