@@ -5,8 +5,9 @@ export default function useDate(){
     const [selectedDate, updateDate] = useState()
 
     useEffect(()=>{
-        let date = new Date().toJSON()
-        let formattedDate = date.split('T')[0]
+        let date = new Date().toLocaleDateString()
+        let dateArray = date.split('/')
+        let formattedDate = `${dateArray[2]}-${dateArray[0]}-${dateArray[1]}`
         updateDate(formattedDate)
     },[])
 
