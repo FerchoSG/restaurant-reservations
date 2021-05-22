@@ -9,6 +9,7 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
     const handleChange = (value) => {
         let date = new Date(value).toLocaleDateString()
         let dateArray = date.split('/')
+        dateArray[0] < 10 ? dateArray[0] = `0${dateArray[0]}`:  null;
         let formattedDate = `${dateArray[2]}-${dateArray[0]}-${dateArray[1]}`
         setTest(formattedDate)
         handleDateChange(formattedDate)
