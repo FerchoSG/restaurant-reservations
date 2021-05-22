@@ -5,10 +5,10 @@ export default function useDate(){
     const [selectedDate, updateDate] = useState()
 
     useEffect(()=>{
-        let date = new Date().toLocaleDateString()
-        let dateArray = date.split('/')
-        let month = dateArray[0] > 9 ? dateArray[0] : `0${dateArray[0]}`
-        let formattedDate = `${dateArray[2]}-${month}-${dateArray[1]}`
+        let date = new Date()
+        let month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+        let day = date.getDate() + 1 > 9 ? date.getDate() + 1 : `0${date.getDate() + 1}`
+        return `${date.getFullYear()}-${month}-${day}`
         updateDate(formattedDate)
     },[])
 
