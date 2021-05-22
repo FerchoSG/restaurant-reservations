@@ -7,6 +7,7 @@ export default function useDate(){
     useEffect(()=>{
         let date = new Date().toLocaleDateString()
         let dateArray = date.split('/')
+        dateArray[0] < 10 ? dateArray[0] = `0${dateArray[0]}`:  null;
         let formattedDate = `${dateArray[2]}-${dateArray[0]}-${dateArray[1]}`
         updateDate(formattedDate)
     },[])
