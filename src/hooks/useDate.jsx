@@ -1,14 +1,12 @@
 import {useEffect, useState} from 'react'
-
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 
 export default function useDate(){
     const [selectedDate, updateDate] = useState()
 
     useEffect(()=>{
-       // let sixHours = 60 * 60 * 6 * 1000;
-        //let currentTime = new Date() - sixHours
-        let date = new Date().toJSON()
-        let formattedDate = date.split('T')[0]
+        let formattedDate = dayjs().locale('cr').format('YYYY-MM-DD')
         updateDate(formattedDate)
     },[])
 

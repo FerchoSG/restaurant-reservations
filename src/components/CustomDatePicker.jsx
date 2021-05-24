@@ -1,20 +1,16 @@
 import React, {useEffect, useState} from 'react'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 
 export default function CustomDatePicker({selectedDate, handleDateChange}) {
     const [test, setTest] = useState(()=>{
-       // let sixHours = 60 * 60 * 6 * 1000;
-        //let currentTime = new Date() - sixHours
-        let date = new Date().toJSON()
+        let date = dayjs().locale('cr').format('YYYY-MM-DD')
        return date.split('T')[0]
     })
 
     const handleChange = (value) => {
-        //let sixHours = 60 * 60 * 6 * 1000;
-        //let currentTime = new Date(value) - sixHours
-        let date = new Date(value).toJSON()
-        let formattedDate = date.split('T')[0]
+        var formattedDate = dayjs(value).locale('cr').format('YYYY-MM-DD')
         console.log(formattedDate)
-        setTest(formattedDate)
         handleDateChange(formattedDate)
     }
 
@@ -22,6 +18,7 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
         if(selectedDate){
             setTest(selectedDate)
         }
+        
     },[selectedDate])
     return (
         <div className="container d-flex flex-column justify-content-center align-items-center mb-3">
