@@ -103,3 +103,31 @@
    
   
 }
+
+.custom-nav{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 240px;
+  transition: all 300ms ease;
+}
+
+.custom-nav.collapsed{
+  width: 100px;
+  /* padding-right: 1.5rem !important; */
+  padding: 2rem !important
+}
+.nav-btn.collapsed{
+  font-size: 1.2rem;
+}
+
+.nav-btn:not(.collapsed){
+  width: 100%;
+}
+
+.nav-btn{
+  text-align: center;
+  text-transform: none !important;
+}
+
+

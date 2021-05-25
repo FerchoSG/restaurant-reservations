@@ -12,6 +12,19 @@
         min-height: 80vh;
         margin: 2rem 1rem;
     }
+
+    .custom-nav{
+        width: 150px;
+    }
+
+    .nav-btn{
+        width: 130px !important;
+        margin-left: 15px !important;
+    }
+
+    .nav-btn.collapsed{
+        width: 80px !important
+      }
 }
 
 @media (max-width: 430px){
@@ -21,6 +34,10 @@
 
     .nav-title{
         font-size: 15px
+    }
+
+    .custom-nav{
+        display: none;
     }
 }
 
