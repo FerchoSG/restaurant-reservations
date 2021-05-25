@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useHistory } from 'react-router-dom'
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark']
 
@@ -8,11 +8,17 @@ export default function Single({reservation, deleteReservation, hour}) {
     const bgColor = colors[Math.floor(Math.random() * 8)]
 
     const location = useLocation()
+    const history = useHistory()
 
     const saveInLocalStorage = () => {
         localStorage.setItem(reservation.id, JSON.stringify(reservation))
         localStorage.setItem('backTo', location.pathname)
         localStorage.setItem('hour', hour)
+    }
+
+    const navigateToDeleteView = () => {
+        saveInLocalStorage()
+        history.push(`/delete/${reservation.id}`)
     }
 
     return (
@@ -27,7 +33,7 @@ export default function Single({reservation, deleteReservation, hour}) {
 
             </Link>
             <button 
-                onClick={()=> deleteReservation(reservation.id, reservation.pax)}
+                onClick={navigateToDeleteView}
                 className="btn btn-sm btn-danger " style={{position: 'absolute', top: '-5px', right: '-5px', zIndex: 2}}>
                 <i className="fas fa-times"></i>
             </button>

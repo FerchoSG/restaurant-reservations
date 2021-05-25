@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import Nav from '../../components/Nav'
 import Form from '../../components/Reservation/Form'
 import { db } from '../../services/firebase'
@@ -10,6 +10,7 @@ export default function Details() {
     const reservation = JSON.parse(localStorage.getItem(id))
     const [times, setTimes] = useState([])
     const selectedDate = localStorage.getItem('selectedDate')
+    let history = useHistory()
 
     useEffect(()=>{
         const typeOfMeal = backTo.split('/')[1]
@@ -25,7 +26,7 @@ export default function Details() {
             <Nav/>
             <div  className="d-flex justify-content-between align-items-center my-4 px-5">
                 <h3 className="display-5">Editar reserva</h3>
-                <Link className="btn bg-nero" to={backTo} >Atras</Link>
+                <button className="btn bg-nero" onClick={()=> history.goBack()} >Atras</button>
             </div>
             <div>
             <Form 

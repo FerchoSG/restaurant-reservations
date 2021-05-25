@@ -113,7 +113,7 @@ export default function List({time, selectedDate}) {
             <div  
               className="d-flex  justify-content-between align-items-center gap-2 rounded" 
               style={{position: 'absolute', top: '-4px', left: '0'}} >
-              <button className="btn bg-second fw-bold" style={{padding: '5px', margin: 0}}>
+              <button className="btn bg-nero fw-bold" style={{padding: '5px', margin: 0}}>
                 Limite <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
                   {reservationsLimit}
                 </span>
@@ -121,6 +121,11 @@ export default function List({time, selectedDate}) {
               <button className="btn bg-second fw-bold" style={{padding: '5px', margin: 0}}>
                 Reservados <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
                   { reservationsCounter }
+                </span>
+              </button>
+              <button className="btn bg-main fw-bold" style={{padding: '5px', margin: 0}}>
+                Disponible <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
+                  { reservationsLimit - reservationsCounter }
                 </span>
               </button>
             </div>

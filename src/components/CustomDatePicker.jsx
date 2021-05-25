@@ -10,7 +10,6 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
 
     const handleChange = (value) => {
         var formattedDate = dayjs(value).locale('cr').format('YYYY-MM-DD')
-        console.log(formattedDate)
         handleDateChange(formattedDate)
     }
 

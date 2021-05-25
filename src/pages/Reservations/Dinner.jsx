@@ -13,11 +13,17 @@ export default function Dinner() {
 
 
     useEffect(()=>{
+        let isMounted = true;
         const typeOfMeal = location.pathname.split('/')[1]
-        db.collection('schedules').doc(typeOfMeal).onSnapshot(querySnapshot=>{
-          const { data } = querySnapshot.data()
-          setTimes(data)
-       })
+        if(isMounted){
+            db.collection('schedules').doc(typeOfMeal).onSnapshot(querySnapshot=>{
+              const { data } = querySnapshot.data()
+              setTimes(data)
+           })
+        }
+
+        return () => {isMounted = false}
+        
     // eslint-disable-next-line
     },[])
 

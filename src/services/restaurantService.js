@@ -32,7 +32,6 @@ export async function updateReservation({date, data, hour, typeOfMeal, id, previ
         .delete()
    
     let reservationsCounter = await getReservationsCounter({date, typeOfMeal, time: previousHour})
-    console.log({date, data, hour, typeOfMeal, id, previousHour, previousPax, reservationsCounter: reservationsCounter.data})
     substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter: reservationsCounter.data})
 
     createReservation({date, data, hour, typeOfMeal})
@@ -108,5 +107,42 @@ export async function updateReservationsPaxCounter({date, typeOfMeal, hour, newC
     .collection(hour)
     .doc('reservation-counter')
     .update({data: newCounter})
+}
+
+export async function deleteReservation ({typeOfMeal, hour, selectedDate, reservation}){
+    const reservationsLimit = await getReservationsLimit({date: selectedDate, typeOfMeal, time: hour})
+    const reservationsCounter = await getReservationsCounter ({date: selectedDate, typeOfMeal, time: hour})
+
+    const newLimit = reservationsLimit.data - reservation.pax;
+    if(reservationsLimit.data > 20 && newLimit > 20){
+        updatePaxLimit({
+        date: selectedDate,
+        typeOfMeal, hour, 
+        newLimit
+        })
+    }else if(newLimit < 20){
+        updatePaxLimit({
+        date: selectedDate,
+        typeOfMeal, hour, 
+        newLimit: 20
+        })
+    }
+
+    db.collection(selectedDate)
+    .doc(typeOfMeal)
+    .collection(hour).doc(reservation.id).delete()
+
+    substractPaxDeletedFromCounter({
+        pax: reservation.pax, date: selectedDate, typeOfMeal, 
+        reservationsCounter: reservationsCounter.data, hour})
+
+    addReservationToDeleted({reservation, date: selectedDate, hour, typeOfMeal})
+}
+function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
+    const newTypeOfMeal = `${typeOfMeal}-deleted`
+    db.collection(date)
+    .doc(newTypeOfMeal)
+    .collection(hour)
+    .doc().set(reservation)
 }
 

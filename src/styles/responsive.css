@@ -39,5 +39,12 @@
     .custom-nav{
         display: none;
     }
+
+    .custom-nav.collapsed{
+        display: flex;
+        /* position: absolute; */
+        /* top: 0; */
+        z-index: 9;
+    }
 }
 

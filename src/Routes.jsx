@@ -16,6 +16,7 @@ import Restaurants from './pages/Admin/Restaurants';
 import Reservations from './pages/Admin/Reservations';
 import DeletedReservations from './pages/Admin/DeletedReservations';
 import Users from './pages/Admin/Users';
+import Delete from './pages/Reservations/Delete'
 
 export default function Routes() {
 
@@ -28,6 +29,7 @@ export default function Routes() {
                     <Route path="/breakfast" exact component={Breakfast} />
                     <Route path="/addReservation/:time" exact component={Add} />
                     <Route path="/details/:id" exact component={Details} />
+                    <Route path="/delete/:id" exact component={Delete} />
                     <Route path="/admin" exact component={Admin} />
                     <Route path="/restaurants" exact component={Restaurants} />
                     <Route path="/reservations" exact component={Reservations} />
