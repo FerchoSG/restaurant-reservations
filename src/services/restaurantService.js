@@ -157,7 +157,7 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
     await addReservationToDeleted({reservation, date: selectedDate, hour, typeOfMeal})
 }
 async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
-    const newTypeOfMeal = `${typeOfMeal}-deleted`
+    const newTypeOfMeal = `${typeOfMeal}Deleted`
     await db.collection(date)
     .doc(newTypeOfMeal)
     .collection(hour)
