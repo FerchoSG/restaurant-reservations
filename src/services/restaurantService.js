@@ -110,7 +110,6 @@ export async function updatePaxLimit({date, typeOfMeal, hour, newLimit}){
     .get()
 
     if(limit.exists ){
-        console.log(limit);
         await db.collection(date)
         .doc(typeOfMeal)
         .collection(hour)
@@ -145,8 +144,6 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
         newLimit: 20
         })
     }
-
-    console.log({selectedDate, typeOfMeal, hour, id: reservation.id});
 
     await db.collection(selectedDate)
     .doc(typeOfMeal)
