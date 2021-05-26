@@ -49,7 +49,7 @@ export default function DeleteForm() {
             reservation.deletedBy = values.deletedBy
             reservation.deletedReason = values.deletedReason
             await deleteReservation({typeOfMeal, hour, selectedDate, reservation})
-            // history.goBack()
+            history.goBack()
           }
         })
       }
