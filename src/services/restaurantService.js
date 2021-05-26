@@ -95,11 +95,19 @@ export async function getReservationsLimit({date, typeOfMeal, time}){
   }
 
 export async function updatePaxLimit({date, typeOfMeal, hour, newLimit}){
-    await db.collection(date)
+    const limit = await db.collection(date)
     .doc(typeOfMeal)
     .collection(hour)
     .doc('limit')
-    .update({data: newLimit})
+    .get()
+
+    if(limit.exists()){
+        await db.collection(date)
+        .doc(typeOfMeal)
+        .collection(hour)
+        .doc('limit')
+        .update({data: newLimit})
+    }
 
 }
 export async function updateReservationsPaxCounter({date, typeOfMeal, hour, newCounter}){
