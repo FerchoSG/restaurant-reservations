@@ -101,7 +101,7 @@ export async function updatePaxLimit({date, typeOfMeal, hour, newLimit}){
     .doc('limit')
     .get()
 
-    if(limit.exists()){
+    if(limit.exists){
         await db.collection(date)
         .doc(typeOfMeal)
         .collection(hour)
