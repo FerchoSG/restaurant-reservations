@@ -111,7 +111,7 @@ export async function updateReservationsPaxCounter({date, typeOfMeal, hour, newC
 
 export async function deleteReservation ({typeOfMeal, hour, selectedDate, reservation}){
     const reservationsLimit = await getReservationsLimit({date: selectedDate, typeOfMeal, time: hour})
-    const reservationsCounter = await getReservationsCounter ({date: selectedDate, typeOfMeal, time: hour})
+    const reservationsCounter = await getReservationsCounter({date: selectedDate, typeOfMeal, time: hour})
 
     const newLimit = reservationsLimit.data - reservation.pax;
     if(reservationsLimit.data > 20 && newLimit > 20){
