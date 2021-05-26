@@ -37,12 +37,20 @@ export async function updateReservation({date, data, hour, typeOfMeal, id, previ
     createReservation({date, data, hour, typeOfMeal})
 }
 const substractPaxDeletedFromCounter = async ({date, typeOfMeal, hour, pax, reservationsCounter})=>{
-    db
+    const counter = await db
     .collection(date)
     .doc(typeOfMeal)
     .collection(hour)
     .doc('reservation-counter')
-    .update({data: Number(reservationsCounter) - Number(pax)})
+    .get()
+
+    if(counter.exists){
+        await db.collection(date)
+        .doc(typeOfMeal)
+        .collection(hour)
+        .doc('reservation-counter')
+        .update({data: Number(reservationsCounter) - Number(pax)})
+    }
 }
 
 export async function updateReservationCounter({date, data, hour, typeOfMeal}){
@@ -101,7 +109,8 @@ export async function updatePaxLimit({date, typeOfMeal, hour, newLimit}){
     .doc('limit')
     .get()
 
-    if(limit.exists){
+    if(limit.exists ){
+        console.log(limit);
         await db.collection(date)
         .doc(typeOfMeal)
         .collection(hour)
