@@ -31,6 +31,10 @@ export default function Dinner() {
         setSelectedDate(date);
     };
 
+    useEffect(()=>{
+        localStorage.setItem('selectedDate',selectedDate)
+    },[selectedDate])
+
 
 
     return (

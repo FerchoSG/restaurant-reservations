@@ -146,6 +146,8 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
         })
     }
 
+    console.log({selectedDate, typeOfMeal, hour, id: reservation.id});
+
     await db.collection(selectedDate)
     .doc(typeOfMeal)
     .collection(hour).doc(reservation.id).delete()
