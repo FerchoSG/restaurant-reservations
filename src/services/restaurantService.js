@@ -32,11 +32,11 @@ export async function updateReservation({date, data, hour, typeOfMeal, id, previ
         .delete()
    
     let reservationsCounter = await getReservationsCounter({date, typeOfMeal, time: previousHour})
-    substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter: reservationsCounter.data})
+    await substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter: reservationsCounter.data})
 
     createReservation({date, data, hour, typeOfMeal})
 }
-const substractPaxDeletedFromCounter = ({date, typeOfMeal, hour, pax, reservationsCounter})=>{
+const substractPaxDeletedFromCounter = async ({date, typeOfMeal, hour, pax, reservationsCounter})=>{
     db
     .collection(date)
     .doc(typeOfMeal)
@@ -84,7 +84,7 @@ export async function getReservationsLimit({date, typeOfMeal, time}){
 
     return limit.exists ? limit.data() : {data: 20}
   }
- export async function getReservationsCounter ({date, typeOfMeal, time}){
+ export async function getReservationsCounter({date, typeOfMeal, time}){
     const counter = await db.collection(date)
     .doc(typeOfMeal)
     .collection(time)
@@ -95,11 +95,12 @@ export async function getReservationsLimit({date, typeOfMeal, time}){
   }
 
 export async function updatePaxLimit({date, typeOfMeal, hour, newLimit}){
-    await db.collection(date)
+    const limit = await db.collection(date)
     .doc(typeOfMeal)
     .collection(hour)
     .doc('limit')
     .update({data: newLimit})
+
 }
 export async function updateReservationsPaxCounter({date, typeOfMeal, hour, newCounter}){
     await db.collection(date)
@@ -115,30 +116,30 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
 
     const newLimit = reservationsLimit.data - reservation.pax;
     if(reservationsLimit.data > 20 && newLimit > 20){
-        updatePaxLimit({
+        await updatePaxLimit({
         date: selectedDate,
         typeOfMeal, hour, 
         newLimit
         })
     }else if(newLimit < 20){
-        updatePaxLimit({
+        await updatePaxLimit({
         date: selectedDate,
         typeOfMeal, hour, 
         newLimit: 20
         })
     }
 
-    db.collection(selectedDate)
+    await db.collection(selectedDate)
     .doc(typeOfMeal)
     .collection(hour).doc(reservation.id).delete()
 
-    substractPaxDeletedFromCounter({
+    await substractPaxDeletedFromCounter({
         pax: reservation.pax, date: selectedDate, typeOfMeal, 
         reservationsCounter: reservationsCounter.data, hour})
 
-    addReservationToDeleted({reservation, date: selectedDate, hour, typeOfMeal})
+    await addReservationToDeleted({reservation, date: selectedDate, hour, typeOfMeal})
 }
-function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
+async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
     const newTypeOfMeal = `${typeOfMeal}-deleted`
     db.collection(date)
     .doc(newTypeOfMeal)
