@@ -14,17 +14,17 @@ export default function List({time, selectedDate}) {
 
     const deleteReservation = (id, pax) => {
       let newLimit = reservationsLimit - pax;
-      if(reservationsLimit > 20 && newLimit > 20){
+      if(reservationsLimit > 40 && newLimit > 40){
         updatePaxLimit({
           date: selectedDate,
           typeOfMeal: locationName, hour: time, 
           newLimit
         })
-      }else if(newLimit < 20){
+      }else if(newLimit < 40){
         updatePaxLimit({
           date: selectedDate,
           typeOfMeal: locationName, hour: time, 
-          newLimit: 20
+          newLimit: 40
         })
       }
       
@@ -66,7 +66,7 @@ export default function List({time, selectedDate}) {
       .doc('limit')
       .onSnapshot((querySnapshot) => {
         const limit = querySnapshot.data()
-        limit ? setReservationsLimit(limit.data) : setReservationsLimit(20)
+        limit ? setReservationsLimit(limit.data) : setReservationsLimit(40)
       })
     }
     const getReservationsCounter = ()=>{
@@ -125,7 +125,7 @@ export default function List({time, selectedDate}) {
               </button>
               <button className="btn bg-main fw-bold" style={{padding: '5px', margin: 0}}>
                 Disponible <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
-                  { reservationsLimit - reservationsCounter }
+                  { (reservationsLimit - reservationsCounter) < 0 ? 0 :  reservationsLimit - reservationsCounter }
                 </span>
               </button>
             </div>

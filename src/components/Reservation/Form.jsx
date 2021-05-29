@@ -102,8 +102,8 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         }
 
 
-        if(20 >= (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) ){
-            let newLimit = 20
+        if(40 >= (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) ){
+            let newLimit = 40
             updatePaxLimit({
                 date: selectedDate,
                 typeOfMeal, hour, 

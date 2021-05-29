@@ -19,7 +19,7 @@ export async function createReservation({date, data, hour, typeOfMeal}){
             .doc(typeOfMeal)
             .collection(hour)
             .doc('limit')
-            .set({data: 20});
+            .set({data: 40});
     }
         updateReservationCounter({date, data, hour, typeOfMeal})
 }
@@ -90,7 +90,7 @@ export async function getReservationsLimit({date, typeOfMeal, time}){
     .doc('limit')
     .get()
 
-    return limit.exists ? limit.data() : {data: 20}
+    return limit.exists ? limit.data() : {data: 40}
   }
  export async function getReservationsCounter({date, typeOfMeal, time}){
     const counter = await db.collection(date)
@@ -131,17 +131,17 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
     const reservationsCounter = await getReservationsCounter({date: selectedDate, typeOfMeal, time: hour})
 
     const newLimit = reservationsLimit.data - reservation.pax;
-    if(reservationsLimit.data > 20 && newLimit > 20){
+    if(reservationsLimit.data > 40 && newLimit > 40){
         await updatePaxLimit({
         date: selectedDate,
         typeOfMeal, hour, 
         newLimit
         })
-    }else if(newLimit < 20){
+    }else if(newLimit < 40){
         await updatePaxLimit({
         date: selectedDate,
         typeOfMeal, hour, 
-        newLimit: 20
+        newLimit: 40
         })
     }
 
