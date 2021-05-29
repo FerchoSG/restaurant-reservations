@@ -44,14 +44,14 @@ export default function Login() {
 
     return (
         <div className="d-flex justify-content-center align-items-center login-container" >
-            <div className="hotel-image">
+            <div className="hotel-image bg-neutral" style={{height:'100vh'}}>
                 <img className="login-image rounded shadow"
                     src="https://i.ytimg.com/vi/bD0FdB2FDu4/maxresdefault.jpg" alt="hotel " />
             </div>
             <div 
                 className="container bg-light d-flex flex-column justify-content-center align-items-center shadow rounded login-form ">
                 <form className="w-100" onSubmit={handleSubmit}>
-                    <h2 className="display-6 mb-3 fw-bold text-muted">Login</h2>
+                    <h2 className="display-6 mb-3 fw-bold text-muted text-center mb-5 login-title">Login</h2>
                     {authError && 
                         <p className="text-danger fw-bold" role="alert">
                             Credenciales no coinciden
@@ -71,7 +71,7 @@ export default function Login() {
                             onChange={({target}) => setPassword(target.value)} required/>
                         <label htmlFor="floatingPassword">Password</label>
                     </div>
-                    <input type="submit" className="btn btn-secondary btn-block" value="Log In"/> 
+                    <input type="submit" className="btn bg-neutral fw-bold fs-5 btn-lg btn-block" value="Log In"/> 
                 </form>
             </div>
         </div>

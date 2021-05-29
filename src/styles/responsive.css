@@ -11,6 +11,18 @@
     .login-form{
         min-height: 80vh;
         margin: 2rem 1rem;
+        background-color: rgba(0,0,0,0.7) !important;
+    }
+    .login-container{
+        background-image: url('https://i.ytimg.com/vi/bD0FdB2FDu4/maxresdefault.jpg');
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+    .login-title{
+        color: #F7F7FF !important;
+        font-size: 3.5rem
     }
 
     .custom-nav{
