@@ -1,6 +1,7 @@
 import { db } from "./firebase";
 
 export async function createReservation({date, data, hour, typeOfMeal}){
+    data.status = 'pendiente'
     await db
         .collection(date)
         .doc(typeOfMeal)
@@ -22,6 +23,15 @@ export async function createReservation({date, data, hour, typeOfMeal}){
             .set({data: 40});
     }
         updateReservationCounter({date, data, hour, typeOfMeal})
+}
+
+export async function updateReservationStatus({date, data, hour, typeOfMeal}){
+    await db
+    .collection(date)
+    .doc(typeOfMeal)
+    .collection(hour)
+    .doc(data.id)
+    .update(data)
 }
 export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour, previousPax}){
     await db

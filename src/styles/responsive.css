@@ -58,5 +58,13 @@
         /* top: 0; */
         z-index: 9;
     }
+
+}
+
+@media (max-width:400px){
+    ul.dropdown-menu.status-menu{
+        margin: -1.2rem -2.1rem !important;
+      }
+
 }
 

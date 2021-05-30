@@ -131,4 +131,11 @@
   text-transform: none !important;
 }
 
+ul.dropdown-menu.status-menu{
+  margin: -1.2rem -9.1rem !important;
+}
 
+.test-d{
+  display: flex;
+  flex-direction: column
+}

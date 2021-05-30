@@ -20,6 +20,7 @@ code {
   --tea-g: #C7F9CC;
   --nero: #495867;
   --bianco: #F7F7FF;
+  --warn: #ee9b00
 }
 
 .bg-main{
@@ -51,6 +52,10 @@ code {
   background-color: var(--bianco) !important;
   color: var(--nero) !important;
 }
+.bg-warn{
+  background-color: var(--warn) !important;
+  color: var(--bianco ) !important;
+}
 
 .color-main{
   color: var(--main) !important;
@@ -76,4 +81,31 @@ code {
 
 .outline-bianco{
   border:1px solid var(--bianco) !important
+}
+
+
+.border-main{
+  border: 1px solid var(--main) !important;
+}
+.border-second{
+  border: 1px solid var(--second) !important;
+}
+.border-neutral{
+  border: 1px solid var(--neutral) !important;
+}
+.border-light-g{
+  border: 1px solid var(--light-g) !important;
+
+}
+.border-tea{
+  border: 1px solid var(--tea-g) !important
+}
+.border-nero{
+  border: 1px solid var(--nero) !important;
+}
+.border-bianco{
+  border: 1px solid var(--bianco) !important;
+}
+.border-warn{
+  border: 1px solid var(--warn) !important;
 }
