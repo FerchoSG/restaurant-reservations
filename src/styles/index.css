@@ -85,27 +85,27 @@ code {
 
 
 .border-main{
-  border: 1px solid var(--main) !important;
+  border: 4px solid var(--main) !important;
 }
 .border-second{
-  border: 1px solid var(--second) !important;
+  border: 4px solid var(--second) !important;
 }
 .border-neutral{
-  border: 1px solid var(--neutral) !important;
+  border: 4px solid var(--neutral) !important;
 }
 .border-light-g{
-  border: 1px solid var(--light-g) !important;
+  border: 4px solid var(--light-g) !important;
 
 }
 .border-tea{
-  border: 1px solid var(--tea-g) !important
+  border: 4px solid var(--tea-g) !important
 }
 .border-nero{
-  border: 1px solid var(--nero) !important;
+  border: 4px solid var(--nero) !important;
 }
 .border-bianco{
-  border: 1px solid var(--bianco) !important;
+  border: 4px solid var(--bianco) !important;
 }
 .border-warn{
-  border: 1px solid var(--warn) !important;
+  border: 4px solid var(--warn) !important;
 }
