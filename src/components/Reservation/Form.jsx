@@ -5,7 +5,7 @@ import rooms from '../../services/hotelRooms'
 import { 
     createReservation, updateReservation, 
     getReservationsLimit, getReservationsCounter, 
-    updatePaxLimit
+    updatePaxLimit, getDefaultPaxLImit
 } 
 from '../../services/restaurantService'
 
@@ -90,7 +90,8 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
     
     const create = async  ({pax, bookedby, room, details})=>{
         const newReservation = {pax, bookedby, room, details}
-
+        const defaultPaxLimit = await getDefaultPaxLImit()
+        console.log(defaultPaxLimit)
 
         if(paxLimit < (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) && !permissionToExceedPaxLimit){
             setLimitError(true)
@@ -102,8 +103,8 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         }
 
 
-        if(40 >= (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) ){
-            let newLimit = 40
+        if(defaultPaxLimit.data >= (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) ){
+            let newLimit = defaultPaxLimit.data
             updatePaxLimit({
                 date: selectedDate,
                 typeOfMeal, hour, 
@@ -125,6 +126,7 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
    
         if(reservation){
             let previousHour = localStorage.getItem('hour')
+            newReservation.status = reservation.status
             updateReservation({
                 date: selectedDate, data: newReservation, 
                 hour, id: reservation.id, typeOfMeal,

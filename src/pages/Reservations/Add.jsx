@@ -32,10 +32,12 @@ export default function Add() {
                 <h3 className="display-5">Agrega una reservacion</h3>
                 <button className="btn bg-nero" onClick={()=> history.goBack()} >Atras</button>
             </section>
-            <CustomDatePicker
-                selectedDate={selectedDate}
-                handleDateChange={handleDateChange}
-            />
+            <div className="container col-md-3 col-6 mb-3">
+                <CustomDatePicker
+                    selectedDate={selectedDate}
+                    handleDateChange={handleDateChange}
+                />
+            </div>
             <Form 
                 createReservation={createReservation}
                 selectedDate={selectedDate}

@@ -1,12 +1,11 @@
 import React, {useState} from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom'
-import { updateReservationStatus} from '../../services/restaurantService'
+import { updatePaxArrived, updateReservationStatus} from '../../services/restaurantService'
 
 const statusColors = {
-    "pendiente": "second",
-    "comiendo": "light-g",
-    "ya llegó": "nero",
-    "no llegó": "warn",
+    "pendiente": "bianco",
+    "ya llegó": "light-g",
+    
 }
 
 export default function Single({reservation, deleteReservation, hour}) {
@@ -31,22 +30,30 @@ export default function Single({reservation, deleteReservation, hour}) {
         evt.preventDefault()
         let status = evt.target.dataset.status
         setStatus(status);
-        console.log(status);
 
-        reservation.status = status;
-        let typeOfMeal = location.pathname.split('/')[1]
-        let date = localStorage.getItem('selectedDate')
+        if(reservation.status !== status){
 
-        updateReservationStatus({date, data: reservation, hour, typeOfMeal})
+            reservation.status = status;
+            let typeOfMeal = location.pathname.split('/')[1]
+            let date = localStorage.getItem('selectedDate')
+    
+            updateReservationStatus({date, data: reservation, hour, typeOfMeal})
+            if(status === 'pendiente'){
+                updatePaxArrived({date, pax: -reservation.pax, mealTime: typeOfMeal})
+            }else{
+                updatePaxArrived({date, pax: reservation.pax, mealTime: typeOfMeal})
+            }
+        }
+
     }
 
 
 
     return (
         <div 
-            className={`card m-1 d-flex flex-column align-items-start p-2 shadow-sm border-${statusColors[status]} border-4`} 
-            style={{minWidth: '250px', minHeight: '200px'}}>
-            <Link className="text-dark" to={`/details/${reservation.id}`} onClick={saveInLocalStorage}>
+            className={`card m-1 d-flex flex-column align-items-start p-2 border bg-${statusColors[status]}`} 
+            style={{minWidth: '250px', minHeight: '200px', overflow: 'hidden'}}>
+            <Link className={`bg-${statusColors[status]} fw-bold`} to={`/details/${reservation.id}`} onClick={saveInLocalStorage}>
                 <p>Room: {reservation.room} </p>
                 <p>Pax: {reservation.pax} </p>
                 <p>Reservado por: {reservation.bookedby} </p>
@@ -72,25 +79,13 @@ export default function Single({reservation, deleteReservation, hour}) {
                     <button 
                         onClick={ChangeStatus}
                         data-status="pendiente"
-                        className="dropdown-item btn mb-2 bg-second">Pendiente</button>
-                </li>
-                <li>
-                    <button 
-                        onClick={ChangeStatus}
-                        data-status="comiendo"
-                        className="dropdown-item btn mb-2 bg-light-g" >Comiendo</button>
+                        className="dropdown-item btn mb-2 bg-bianco">Pendiente</button>
                 </li>
                 <li>
                     <button 
                         onClick={ChangeStatus}
                         data-status="ya llegó"
-                        className="dropdown-item btn mb-2 bg-nero" >Ya llegó</button>
-                </li>
-                <li>
-                    <button 
-                        onClick={ChangeStatus}
-                        data-status="no llegó"
-                        className="dropdown-item btn mb-2 bg-warn" >No llegó</button>
+                        className="dropdown-item btn mb-2 bg-light-g" >Ya llegó</button>
                 </li>
                 </div>
             </ul>

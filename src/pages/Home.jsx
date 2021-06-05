@@ -22,10 +22,7 @@ export default function Home() {
             <section>
                 <h2 className="display-4 text-center my-3">Elige un tiempo de alimentación</h2>
                 
-
-
-
-                <section className="d-flex flex-column flex-md-row container m-auto p-4 gap-2">
+                <section className="d-flex flex-column flex-wrap flex-md-row container m-auto p-4 gap-2">
                     <Link to="/breakfast" className="bg-neutral shadow rounded col text-light" style={{cursor: "pointer", padding: '4rem'}}>
                         <div className="d-flex justify-content-between align-items-center">
                             <h3 className="display-6">Desayuno</h3>

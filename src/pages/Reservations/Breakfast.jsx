@@ -5,10 +5,12 @@ import List from '../../components/Reservation/List';
 import { db } from './../../services/firebase';
 import useDate from '../../hooks/useDate';
 import CustomDatePicker from '../../components/CustomDatePicker';
+import {getArrivedCounter} from '../../services/restaurantService';
 
 export default function Breakfast() {
     const [times, setTimes] = useState([])
     const {selectedDate, setSelectedDate} = useDate()
+    const [paxArrived, setPaxArrived] = useState(0)
     const location = useLocation()
 
     useEffect(()=>{
@@ -31,6 +33,10 @@ export default function Breakfast() {
 
     useEffect(()=>{
         localStorage.setItem('selectedDate',selectedDate)
+
+        if(selectedDate){
+           getArrivedCounter(selectedDate, setPaxArrived)
+        }
     },[selectedDate])
 
     return (
@@ -43,10 +49,18 @@ export default function Breakfast() {
                     <Link to='/' className="btn bg-nero">Atras</Link>
                 </div>
             </div>
-            <CustomDatePicker
-                selectedDate={selectedDate}
-                handleDateChange={handleDateChange}
-            />
+            <div className="d-flex justify-content-center align-items-center gap-4 mb-3">
+                    <div className="btn btn-sm bg-nero">
+                        ya llegarón
+                        <span className="badge bg-bianco mx-2" style={{fontSize: '.9rem'}}>
+                            {paxArrived}
+                        </span>
+                    </div>
+                <CustomDatePicker
+                    selectedDate={selectedDate}
+                    handleDateChange={handleDateChange}
+                />
+            </div>
             {times.map((time, index) =>
                   <div key={index} className="d-flex align-items-center mb-3 p-2">
                     <p 

@@ -20,8 +20,8 @@ export default function CustomDatePicker({selectedDate, handleDateChange}) {
         
     },[selectedDate])
     return (
-        <div className="container d-flex flex-column justify-content-center align-items-center mb-3">
-        <div className="col-lg-3 col-md-4">
+        <div className="d-flex flex-column">
+        <div className="">
             <label htmlFor="test" className="color-nero fw-bold">Fecha seleccionada:</label>
             <input 
                 type="date" id="test" 

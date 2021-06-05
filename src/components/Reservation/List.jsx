@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router';
 import { db } from '../../services/firebase';
-import {updatePaxLimit} from '../../services/restaurantService';
+import {updatePaxLimit, getDefaultPaxLImit} from '../../services/restaurantService';
 import Single from './Single';
 import Swal from 'sweetalert2'
 
@@ -9,26 +9,23 @@ export default function List({time, selectedDate}) {
     const [reservations, setReservations] = useState([])
     const [reservationsCounter, setReservationsCounter] = useState(0)
     const [reservationsLimit, setReservationsLimit] = useState(0)
-    const [reservationsPending, setReservationsPending] = useState(0)
-    const [reservationsEating, setReservationsEating] = useState(0)
-    const [reservationsDone, setReservationsDone] = useState(0)
-    const [reservationsGone, setReservationsGone] = useState(0)
     const location = useLocation()
     const locationName = location.pathname.split('/')[1]
 
-    const deleteReservation = (id, pax) => {
+    const deleteReservation = async (id, pax) => {
+      const defaultPaxLimit = await getDefaultPaxLImit()
       let newLimit = reservationsLimit - pax;
-      if(reservationsLimit > 40 && newLimit > 40){
+      if(reservationsLimit > defaultPaxLimit.data && newLimit > defaultPaxLimit.data){
         updatePaxLimit({
           date: selectedDate,
           typeOfMeal: locationName, hour: time, 
           newLimit
         })
-      }else if(newLimit < 40){
+      }else if(newLimit < defaultPaxLimit.data){
         updatePaxLimit({
           date: selectedDate,
           typeOfMeal: locationName, hour: time, 
-          newLimit: 40
+          newLimit: defaultPaxLimit.data
         })
       }
       
@@ -60,26 +57,19 @@ export default function List({time, selectedDate}) {
               }
             });
             // eslint-disable-next-line 
-            let pending = docs.filter((doc) => doc.status === 'pendiente' || doc.status == undefined).length
-            setReservationsPending(pending);
-            let eating = docs.filter((doc) => doc.status === 'comiendo').length
-            setReservationsEating(eating);
-            let done = docs.filter((doc) => doc.status === 'ya llegó').length
-            setReservationsDone(done);
-            let gone = docs.filter((doc) => doc.status === 'no llegó').length
-            setReservationsGone(gone);
             setReservations(docs)
           });
       }
 
-    const getReservationsLimit = ()=>{
+    const getReservationsLimit = async ()=>{
+      const defaultPaxLimit = await getDefaultPaxLImit()
       db.collection(selectedDate)
       .doc(locationName)
       .collection(time)
       .doc('limit')
       .onSnapshot((querySnapshot) => {
         const limit = querySnapshot.data()
-        limit ? setReservationsLimit(limit.data) : setReservationsLimit(40)
+        limit ? setReservationsLimit(limit.data) : setReservationsLimit(defaultPaxLimit.data)
       })
     }
     const getReservationsCounter = ()=>{
@@ -119,7 +109,7 @@ export default function List({time, selectedDate}) {
       
     return (
         <div className="m-1 d-flex flex-nowrap align-items-start" style={{maxWidth: '100%',overflowX: 'auto', paddingTop: '2rem'}}>
-          <div  
+          {/* <div  
             className={`card m-1 d-flex justify-content-center align-items-center p-2 shadow-sm bg-nero`}
             style={{minWidth: '250px', minHeight: '220px'}} >
               <div className="d-flex justify-content-between align-items-center w-100">
@@ -138,7 +128,7 @@ export default function List({time, selectedDate}) {
                 <p >reservas que no llegaron: </p>
                 <p className="badge bg-bianco fs-6">{reservationsGone}</p>
               </div>
-          </div>
+          </div> */}
             {reservations.map((reservation, index) => 
                 <Single 
                   key={index} hour={time} 
