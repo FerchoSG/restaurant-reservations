@@ -5,16 +5,18 @@ export async function getDefaultPaxLImit() {
     .collection('schedules')
     .doc('settings').get()
 
+
     return limit.data()
 }
 
 
-export async function createReservation({date, data, hour, typeOfMeal}){
-    console.log(data.status)
+export async function createReservation({date, data, hour, typeOfMeal, currentUser}){
+    data.account = currentUser.email
     if(data.status === undefined){
         data.status = 'pendiente'
     }
     const defaultPaxLimit = await getDefaultPaxLImit()
+    await checkIfCounterOrCreate()
     await db
         .collection(date)
         .doc(typeOfMeal)
@@ -203,7 +205,6 @@ export function getArrivedCounter(date, setState){
 }
 
 export async function updatePaxArrived({date, pax, mealTime}){
-    console.log({date, pax})
     let currentCounter = await db.collection(date)
     .doc(mealTime)
     .collection('counter')
@@ -220,3 +221,18 @@ export async function updatePaxArrived({date, pax, mealTime}){
     .set({data: updatedCounter})
 }
 
+async function checkIfCounterOrCreate(){
+    let currentCounter = await db.collection(date)
+    .doc(mealTime)
+    .collection('counter')
+    .doc('paxArrived')
+    .get()
+
+    if(!currentCounter.exists){
+        db.collection(date)
+            .doc(mealTime)
+            .collection('counter')
+            .doc('paxArrived')
+            .set({data: 0})
+    }
+}

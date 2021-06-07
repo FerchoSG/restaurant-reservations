@@ -14,6 +14,7 @@ import * as Yup from 'yup'
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {useAuth} from '../../context/AuthContext';
 
 export default function Form({times, reservation, time, selectedDate} = {reservation: false, time: ''}) {
     const [editedPax, setEditedPax] = useState(0)
@@ -23,6 +24,7 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
     const [limitError, setLimitError] = useState()
     const [confirmationCode, setConfirmationCode] = useState()
     const [permissionToExceedPaxLimit, setPermissionToExceedPaxLimit] = useState(false)
+    const {currentUser} = useAuth()
     const params = useParams()
     const reservationForm = useRef()
     const typeOfMeal = params.time || localStorage.getItem('backTo').split('/')[1]
@@ -130,14 +132,14 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
             updateReservation({
                 date: selectedDate, data: newReservation, 
                 hour, id: reservation.id, typeOfMeal,
-                previousHour, previousPax: reservation.pax})
+                previousHour, previousPax: reservation.pax, currentUser})
                 // history.push(backTo)
                  notify_updated()
                  setLimitError(false)
             }else{
                 createReservation({
                 date: selectedDate, data: newReservation , 
-                hour, typeOfMeal})
+                hour, typeOfMeal, currentUser})
                 notify_created()
                     clearForm()
         //         // history.push(backTo)
