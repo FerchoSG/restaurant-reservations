@@ -52,9 +52,9 @@ export async function getDefaultPaxLImit() {
 
 export async function createReservation({date, data, hour, typeOfMeal, currentUser}){
     data.account = currentUser.email
-    if(data.status === undefined){
-        data.status = 'pendiente'
-    }
+    // if(data.status === undefined){
+    //     data.status = 'pendiente'
+    // }
     const defaultPaxLimit = await getDefaultPaxLImit()
     await checkIfCounterOrCreate({date, mealTime: typeOfMeal})
     await db
