@@ -71,6 +71,7 @@ export default function Breakfast() {
                         <span className="badge bg-bianco mx-2" style={{fontSize: '.9rem'}}>
                             {paxArrived}
                         </span>
+                        pax
                     </div>
                 <CustomDatePicker
                     selectedDate={selectedDate}
