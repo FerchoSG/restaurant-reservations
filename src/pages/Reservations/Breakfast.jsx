@@ -35,7 +35,7 @@ export default function Breakfast() {
         localStorage.setItem('selectedDate',selectedDate)
 
         if(selectedDate){
-           getArrivedCounter({date: selectedDate, setState: setPaxArrived, mealTime: typeOfMeal})
+           getArrivedCounter(selectedDate, setPaxArrived, typeOfMeal)
         }
         // eslint-disable-next-line
     },[selectedDate])
