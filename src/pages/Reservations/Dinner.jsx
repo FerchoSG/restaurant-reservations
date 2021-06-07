@@ -36,7 +36,7 @@ export default function Dinner() {
     useEffect(()=>{
         localStorage.setItem('selectedDate',selectedDate)
         if(selectedDate){
-            getArrivedCounter({date: selectedDate, setStaus: setPaxArrived, mealTime: typeOfMeal})
+            getArrivedCounter(selectedDate, setPaxArrived, typeOfMeal)
          }
          // eslint-disable-next-line
     },[selectedDate])
