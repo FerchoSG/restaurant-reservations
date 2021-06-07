@@ -233,7 +233,7 @@ async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
     .doc().set(reservation)
 }
 
-export async function getArrivedCounter({date, setState, mealTime}){
+export async function getArrivedCounter(date, setState, mealTime){
     await checkIfCounterOrCreate({date, mealTime})
 
     db.collection(date)
