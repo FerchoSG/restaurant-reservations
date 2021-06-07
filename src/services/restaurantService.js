@@ -242,8 +242,11 @@ export async function getArrivedCounter(date, setState, mealTime){
     .doc('paxArrived')
     .onSnapshot((querySnapshot =>{
         let paxArrived = querySnapshot.data()
-        if(paxArrived.exists)
+        console.log(paxArrived)
+        if(paxArrived.exists){
             setState(paxArrived.data)
+        }
+           
     }))
 }
 
