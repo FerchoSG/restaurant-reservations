@@ -1,5 +1,45 @@
 import { db } from "./firebase";
 
+export async function getall(dates, mealTime){
+    let times = await getSchedules(mealTime)
+
+    let dayTime = mealTime === 'breakfast' ? 'am' : 'pm'
+
+    let docs = []
+    dates.map(date =>
+        times.data.map(async (time) => {
+            let mealTimeDocs = await 
+                    db.collection(date)
+                    .doc(mealTime)
+                    .collection(time).get()
+            
+            mealTimeDocs.forEach(mealTimeDoc => {
+                if(mealTimeDoc.id !== 'limit' && mealTimeDoc.id !== 'reservation-counter'){
+                    let newDoc = mealTimeDoc.data()
+                    let formattedDoc = {
+                        'detalles': newDoc.details,
+                        'pax': newDoc.pax,
+                        'estado': newDoc.status,
+                        'habitacion': newDoc.room,
+                        'reservado por': newDoc.bookedby,
+                        'fecha de creacion': date,
+                        'hora': `${time[0]}:${time[1]}${time[2]} ${dayTime}`,
+                        'usuario': newDoc.account,
+                    }
+                    docs.push(formattedDoc)
+                }
+            })
+        })
+    )
+
+    return docs
+}
+
+async function getSchedules(mealTime) {
+    let schedules = await db.collection('schedules').doc(mealTime).get()
+    return schedules.data()
+}
+
 export async function getDefaultPaxLImit() {
     let limit = await db
     .collection('schedules')
@@ -193,15 +233,17 @@ async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
     .doc().set(reservation)
 }
 
-export function getArrivedCounter({date, setState, mealTime}){
-    checkIfCounterOrCreate({date, mealTime})
+export async function getArrivedCounter({date, setState, mealTime}){
+    await checkIfCounterOrCreate({date, mealTime})
+
     db.collection(date)
     .doc(mealTime)
     .collection('counter')
     .doc('paxArrived')
     .onSnapshot((querySnapshot =>{
         let paxArrived = querySnapshot.data()
-        setState(paxArrived.data)
+        if(paxArrived.exists)
+            setState(paxArrived.data)
     }))
 }
 

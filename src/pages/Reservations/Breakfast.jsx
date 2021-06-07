@@ -66,7 +66,9 @@ export default function Breakfast() {
                   <div key={index} className="d-flex align-items-center mb-3 p-2">
                     <p 
                         style={{transform: 'rotate(-90deg)', width: '3rem'}} 
-                        className="m-0 text-cente p-0 color-nero fw-bold fs-3" >{time[0]}:{time[1]}{time[2]}am</p>
+                        className="m-0 text-cente p-0 color-nero fw-bold fs-3" >
+                            {time[0]}:{time[1]}{time[2]}am
+                        </p>
                     <div
                       className="card d-flex flex-row align-items-start w-100 "
                       style={{ minHeight: "200px" }}
