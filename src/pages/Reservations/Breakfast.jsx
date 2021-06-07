@@ -5,7 +5,7 @@ import List from '../../components/Reservation/List';
 import { db } from './../../services/firebase';
 import useDate from '../../hooks/useDate';
 import CustomDatePicker from '../../components/CustomDatePicker';
-import {getArrivedCounter} from '../../services/restaurantService';
+import {checkIfCounterOrCreate} from '../../services/restaurantService';
 
 export default function Breakfast() {
     const [times, setTimes] = useState([])
@@ -35,10 +35,25 @@ export default function Breakfast() {
         localStorage.setItem('selectedDate',selectedDate)
 
         if(selectedDate){
-           getArrivedCounter({date: selectedDate, setState: setPaxArrived, mealTime: typeOfMeal})
+           getArrivedCounter()
         }
         // eslint-disable-next-line
     },[selectedDate])
+
+    const getArrivedCounter = async () => {
+        await checkIfCounterOrCreate({date: selectedDate, mealTime: typeOfMeal})
+    
+        db.collection(selectedDate)
+        .doc(typeOfMeal)
+        .collection('counter')
+        .doc('paxArrived')
+        .onSnapshot((querySnapshot =>{
+            if(querySnapshot.exists){
+                let paxArrived = querySnapshot.data()
+                setPaxArrived(paxArrived.data)
+            }
+        }))
+    }
 
     return (
         <div className="mb-3">

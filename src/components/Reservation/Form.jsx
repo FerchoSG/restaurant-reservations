@@ -5,7 +5,7 @@ import rooms from '../../services/hotelRooms'
 import { 
     createReservation, updateReservation, 
     getReservationsLimit, getReservationsCounter, 
-    updatePaxLimit, getDefaultPaxLImit
+    updatePaxLimit, getDefaultPaxLImit, getAccessCode
 } 
 from '../../services/restaurantService'
 
@@ -29,8 +29,8 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
     const reservationForm = useRef()
     const typeOfMeal = params.time || localStorage.getItem('backTo').split('/')[1]
     const backTo = '/'+typeOfMeal
-
-    const code = 'hasrs2020'
+    const [code, setCode] = useState('')
+    // const code = 'hasrs2020'
 
     const reservationSchema = Yup.object().shape({
         pax: Yup.number().moreThan(0,'el numero de pax debe ser mayor a 0')
@@ -93,7 +93,6 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
     const create = async  ({pax, bookedby, room, details})=>{
         const newReservation = {pax, bookedby, room, details}
         const defaultPaxLimit = await getDefaultPaxLImit()
-        console.log(defaultPaxLimit)
 
         if(paxLimit < (Number(pax) - Number(editedPax)) + Number(totalPaxCounter) && !permissionToExceedPaxLimit){
             setLimitError(true)
@@ -153,6 +152,13 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         formik.resetForm()
         setLimitError(false)
     }
+
+    useEffect(() => {
+        getAccessCode()
+        .then(response =>{
+            setCode(response.code)
+        })
+    }, [])
 
 
     useEffect(()=>{

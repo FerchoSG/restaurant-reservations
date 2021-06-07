@@ -264,7 +264,7 @@ export async function updatePaxArrived({date, pax, mealTime}){
     .set({data: updatedCounter})
 }
 
-async function checkIfCounterOrCreate({date, mealTime}){
+export async function checkIfCounterOrCreate({date, mealTime}){
     let currentCounter = await db.collection(date)
     .doc(mealTime)
     .collection('counter')
@@ -278,4 +278,9 @@ async function checkIfCounterOrCreate({date, mealTime}){
             .doc('paxArrived')
             .set({data: 0})
     }
+}
+
+export async function getAccessCode(){
+    const accessCode = await db.collection('settings').doc('accessCode').get()
+    return accessCode.data()
 }

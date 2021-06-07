@@ -5,7 +5,7 @@ import List from '../../components/Reservation/List';
 import useDate from '../../hooks/useDate';
 import { db } from './../../services/firebase';
 import CustomDatePicker from '../../components/CustomDatePicker';
-import {getArrivedCounter} from '../../services/restaurantService';
+import {checkIfCounterOrCreate} from '../../services/restaurantService';
 
 export default function Dinner() {
     const [times, setTimes] = useState([])
@@ -36,10 +36,26 @@ export default function Dinner() {
     useEffect(()=>{
         localStorage.setItem('selectedDate',selectedDate)
         if(selectedDate){
-            getArrivedCounter({date: selectedDate, setStaus: setPaxArrived, mealTime: typeOfMeal})
+            getArrivedCounter()
          }
          // eslint-disable-next-line
     },[selectedDate])
+
+    const getArrivedCounter = async () => {
+        await checkIfCounterOrCreate({date: selectedDate, mealTime: typeOfMeal})
+    
+        db.collection(selectedDate)
+        .doc(typeOfMeal)
+        .collection('counter')
+        .doc('paxArrived')
+        .onSnapshot((querySnapshot =>{
+            if(querySnapshot.exists){
+                let paxArrived = querySnapshot.data()
+                setPaxArrived(paxArrived.data)
+            }
+        }))
+    }
+
 
 
 
