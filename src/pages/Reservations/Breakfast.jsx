@@ -12,10 +12,10 @@ export default function Breakfast() {
     const {selectedDate, setSelectedDate} = useDate()
     const [paxArrived, setPaxArrived] = useState(0)
     const location = useLocation()
+    const typeOfMeal = location.pathname.split('/')[1]
 
     useEffect(()=>{
         let isMounted = true;
-        const typeOfMeal = location.pathname.split('/')[1]
         if(isMounted){
             db.collection('schedules').doc(typeOfMeal).onSnapshot(querySnapshot=>{
               const { data } = querySnapshot.data()
@@ -35,7 +35,7 @@ export default function Breakfast() {
         localStorage.setItem('selectedDate',selectedDate)
 
         if(selectedDate){
-           getArrivedCounter(selectedDate, setPaxArrived)
+           getArrivedCounter({date: selectedDate, setState: setPaxArrived, mealTime: typeOfMeal})
         }
     },[selectedDate])
 

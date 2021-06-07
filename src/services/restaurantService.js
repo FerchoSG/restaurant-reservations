@@ -16,7 +16,7 @@ export async function createReservation({date, data, hour, typeOfMeal, currentUs
         data.status = 'pendiente'
     }
     const defaultPaxLimit = await getDefaultPaxLImit()
-    await checkIfCounterOrCreate()
+    await checkIfCounterOrCreate({date, mealTime: typeOfMeal})
     await db
         .collection(date)
         .doc(typeOfMeal)
@@ -193,9 +193,10 @@ async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
     .doc().set(reservation)
 }
 
-export function getArrivedCounter(date, setState){
+export function getArrivedCounter({date, setState, mealTime}){
+    checkIfCounterOrCreate({date, mealTime})
     db.collection(date)
-    .doc('breakfast')
+    .doc(mealTime)
     .collection('counter')
     .doc('paxArrived')
     .onSnapshot((querySnapshot =>{
@@ -221,7 +222,7 @@ export async function updatePaxArrived({date, pax, mealTime}){
     .set({data: updatedCounter})
 }
 
-async function checkIfCounterOrCreate(){
+async function checkIfCounterOrCreate({date, mealTime}){
     let currentCounter = await db.collection(date)
     .doc(mealTime)
     .collection('counter')

@@ -12,11 +12,11 @@ export default function Dinner() {
     const {selectedDate, setSelectedDate} = useDate()
     const [paxArrived, setPaxArrived] = useState(0)
     const location = useLocation()
+    const typeOfMeal = location.pathname.split('/')[1]
 
 
     useEffect(()=>{
         let isMounted = true;
-        const typeOfMeal = location.pathname.split('/')[1]
         if(isMounted){
             db.collection('schedules').doc(typeOfMeal).onSnapshot(querySnapshot=>{
               const { data } = querySnapshot.data()
@@ -36,7 +36,7 @@ export default function Dinner() {
     useEffect(()=>{
         localStorage.setItem('selectedDate',selectedDate)
         if(selectedDate){
-            getArrivedCounter(selectedDate, setPaxArrived)
+            getArrivedCounter({date: selectedDate, setStaus: setPaxArrived, mealTime: typeOfMeal})
          }
     },[selectedDate])
 
