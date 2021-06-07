@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import Admin from './pages/Admin/index'
+// import Admin from './pages/Admin/index'
 // import PrivateRoute from './components/PrivateRoute'
 // import PublicRoute from './components/PublicRoute'
 // import {useAuth} from './context/AuthContext'

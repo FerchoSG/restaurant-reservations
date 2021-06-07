@@ -38,6 +38,7 @@ export default function Dinner() {
         if(selectedDate){
             getArrivedCounter({date: selectedDate, setStaus: setPaxArrived, mealTime: typeOfMeal})
          }
+         // eslint-disable-next-line
     },[selectedDate])
 
 

@@ -37,6 +37,7 @@ export default function Breakfast() {
         if(selectedDate){
            getArrivedCounter({date: selectedDate, setState: setPaxArrived, mealTime: typeOfMeal})
         }
+        // eslint-disable-next-line
     },[selectedDate])
 
     return (
