@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 // import useDate from '../../hooks/useDate'
-import rooms from '../../services/hotelRooms'
+import { multiSelectRooms } from '../../services/hotelRooms'
 import { 
     createReservation, updateReservation, 
     getReservationsLimit, getReservationsCounter, 
@@ -15,6 +15,29 @@ import dayjs from 'dayjs'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useAuth} from '../../context/AuthContext';
+
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
+
+const animatedComponents = makeAnimated();
+
+const colourStyles = {
+    control: styles => ({ ...styles, backgroundColor: 'white' }),
+    multiValue: (styles) => {
+        return {
+          ...styles,
+          backgroundColor: '#C7F9CC',
+          color: '#57CC99'
+        };
+      },
+      multiValueRemove: (styles) => ({
+        ...styles,
+        ':hover': {
+          backgroundColor: '#57CC99',
+          color: '#C7F9CC',
+        },
+      }),
+    }
 
 export default function Form({times, reservation, time, selectedDate} = {reservation: false, time: ''}) {
     const [editable, setEditable] = useState(true)
@@ -38,7 +61,14 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
           .required('el numero de pax debe ser mayor a 0'),
         bookedby: Yup.string()
           .required('debes indicar quien crea la reserva'),
-        room: Yup.string().required('debes elegir un numero de habitación'),
+        room: Yup.array()
+            .min(1, 'Elige al menos una habitacion')
+            .of(
+                Yup.object().shape({
+                    label: Yup.string().required(),
+                    value: Yup.string().required()
+                })
+            ),
         details: Yup.string().nullable()
       });
 
@@ -46,11 +76,13 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         initialValues: {
           pax: 0,
           bookedby: '', 
-          room: '',
+          room: [],
           details: ''
         },
         onSubmit: values => {
-          create(values)
+            const rooms = values.room.map(t => t.value)
+            values.room = rooms.join()
+            create(values)
         },
         validationSchema: reservationSchema
       });
@@ -170,7 +202,8 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
             setEditedPax(reservation.pax)
             formik.values.pax = reservation.pax
             formik.values.bookedby = reservation.bookedby
-            formik.values.room = reservation.room
+            const rooms = reservation.room.split(',')
+            formik.values.room = rooms.map(room => ({value: room, label: room}))
             formik.values.details = reservation.details
             let hourLS = localStorage.getItem('hour')
             setHour(hourLS)
@@ -237,19 +270,19 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
             <div className='d-flex justify-content-between gap-2 mb-2 w-100'>
                 <div className="col-6">
                     <label className='form-label color-nero fw-bold'>Numero de pax</label>
-                    <input type='number' min='0' name="pax" value={formik.values.pax}  onChange={formik.handleChange} className='form-control' />
+                    <input type='number' disabled={!editable} min='0' name="pax" value={formik.values.pax}  onChange={formik.handleChange} className='form-control' />
                     {formik.errors.pax ? <p className="text-danger fw-bold p-0 m-0">{formik.errors.pax}</p> : null}
                 </div>
                 <div className="col-6">
                     <label className='form-label color-nero fw-bold'>Reservado por:</label>
-                    <input type='text'  name="bookedby" value={formik.values.bookedby}  onChange={formik.handleChange} className='form-control' id='bookedby' />
+                    <input type='text'  name="bookedby" value={formik.values.bookedby} disabled={!editable} onChange={formik.handleChange} className='form-control' id='bookedby' />
                     {formik.errors.bookedby ? <p className="text-danger fw-bold p-0 m-0">{formik.errors.bookedby}</p> : null}
                 </div>
             </div>
             <div className="d-flex justify-content-between gap-2 mb-2  w-100">
                 <div className="col-6">
                     <label className='form-label color-nero fw-bold'>Hora:</label>
-                    <select className='form-select' aria-label='habitación' onChange={({target}) => setHour(target.value)}>
+                    <select disabled={!editable} className='form-select' aria-label='habitación' onChange={({target}) => setHour(target.value)}>
                         {!reservation ?? 
                             <option defaultValue="" >
                                 Escoge una hora
@@ -267,21 +300,25 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
                 </div>
                 <div className="col-6">
                     <label className='form-label color-nero fw-bold'>Habitación:</label>
-                    <select id="room" className='form-select' aria-label='habitación' onChange={formik.handleChange}>
-                        <option defaultValue={formik.values.room} >
-                            {reservation ? formik.values.room : 'Escoge una habitacion'}
-                        </option>
-                        { rooms.map((room, index) =>
-                            <option key={index} value={room}> {room} </option>
-                        )}
-                    </select>
-                    {/* {formik.errors.room ? <p className="text-danger fw-bold p-0 m-0">{formik.errors.room}</p> : null} */}
+                    <Select
+                        id="room" 
+                        isDisabled={!editable}
+                        placeholder="Elige una habitación"
+                        closeMenuOnSelect={true}
+                        components={animatedComponents}
+                        value={formik.values.room}
+                        isMulti
+                        options={multiSelectRooms}
+                        onChange={target => formik.setFieldValue('room', target)}
+                        styles={colourStyles}
+                    />
+                    {formik.errors.room ? <p className="text-danger fw-bold p-0 m-0">{formik.errors.room}</p> : null}
                 </div>
 
             </div>
             <div className="mb-3">
                 <label className='form-label color-nero fw-bold'>Detalles:</label>
-                <textarea 
+                <textarea disabled={!editable}
                     defaultValue={`${reservation ? reservation.details : ''}`}
                     className='form-control' id='details' onChange={formik.handleChange} >
                     
