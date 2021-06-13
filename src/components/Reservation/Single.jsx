@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom'
-import { updatePaxArrived, updateReservationStatus} from '../../services/restaurantService'
+import { updatePaxArrived, updatePaxPendingCounter, updateReservationStatus} from '../../services/restaurantService'
 
 const statusColors = {
     "pendiente": "bianco",
@@ -40,8 +40,10 @@ export default function Single({reservation, deleteReservation, hour}) {
             updateReservationStatus({date, data: reservation, hour, typeOfMeal})
             if(status === 'pendiente'){
                 updatePaxArrived({date, pax: -reservation.pax, mealTime: typeOfMeal})
-            }else{
+                updatePaxPendingCounter({date, pax: reservation.pax, mealTime: typeOfMeal})
+            }else if(status === 'ya llegó'){
                 updatePaxArrived({date, pax: reservation.pax, mealTime: typeOfMeal})
+                updatePaxPendingCounter({date, pax: -reservation.pax, mealTime: typeOfMeal})
             }
         }
 

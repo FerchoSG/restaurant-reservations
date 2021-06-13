@@ -259,6 +259,7 @@ export async function updatePaxArrived({date, pax, mealTime}){
 
     let {data} = currentCounter.data()
     let updatedCounter = data + pax > 0 ? data + pax : 0;
+    console.log('updatedCounter', updatedCounter)
     
     await db.collection(date)
     .doc(mealTime)
@@ -296,7 +297,7 @@ export async function checkIfCounterOrCreate({date, mealTime}){
     }
 }
 
-async function updatePaxPendingCounter({date, pax, mealTime}){
+export async function updatePaxPendingCounter({date, pax, mealTime}){
     let currentCounter = await db.collection(date)
     .doc(mealTime)
     .collection('counter')
@@ -305,7 +306,7 @@ async function updatePaxPendingCounter({date, pax, mealTime}){
 
     let {data} = currentCounter.data()
     let updatedCounter = data + pax > 0 ? data + pax : 0;
-    
+    console.log('updatePaxPendingCounter', updatedCounter)
     await db.collection(date)
     .doc(mealTime)
     .collection('counter')
