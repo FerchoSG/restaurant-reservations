@@ -4,11 +4,13 @@ import { db } from '../../services/firebase';
 import {updatePaxLimit, getDefaultPaxLImit} from '../../services/restaurantService';
 import Single from './Single';
 import Swal from 'sweetalert2'
+import BounceSpinner from '../BounceSpinner';
 
 export default function List({time, selectedDate}) {
     const [reservations, setReservations] = useState([])
     const [reservationsCounter, setReservationsCounter] = useState(0)
     const [reservationsLimit, setReservationsLimit] = useState(0)
+    const [loading, setLoading] = useState(false)
     const location = useLocation()
     const locationName = location.pathname.split('/')[1]
 
@@ -46,6 +48,7 @@ export default function List({time, selectedDate}) {
     }
 
     const getReservations = async () => {
+      setLoading(true)
         db.collection(selectedDate)
           .doc(locationName)
           .collection(time)
@@ -58,6 +61,7 @@ export default function List({time, selectedDate}) {
             });
             // eslint-disable-next-line 
             setReservations(docs)
+            setLoading(false)
           });
       }
 
@@ -106,29 +110,11 @@ export default function List({time, selectedDate}) {
         
         // eslint-disable-next-line
       },[selectedDate])
+
+    if(loading) return <BounceSpinner />
       
     return (
         <div className="m-1 d-flex flex-nowrap align-items-start" style={{maxWidth: '100%',overflowX: 'auto', paddingTop: '2rem'}}>
-          {/* <div  
-            className={`card m-1 d-flex justify-content-center align-items-center p-2 shadow-sm bg-nero`}
-            style={{minWidth: '250px', minHeight: '220px'}} >
-              <div className="d-flex justify-content-between align-items-center w-100">
-                  <p >reservas pendientes: </p>
-                  <p className="badge bg-bianco fs-6">{reservationsPending}</p>
-              </div>
-              <div className="d-flex justify-content-between align-items-center  w-100">
-                <p >reservas comiendo: </p>
-                <p className="badge bg-bianco fs-6">{reservationsEating}</p>
-              </div>
-              <div className="d-flex justify-content-between align-items-center  w-100">
-                <p >reservas que ya llegaron: </p>
-                <p className="badge bg-bianco fs-6">{reservationsDone}</p>
-              </div>
-              <div className="d-flex justify-content-between align-items-center  w-100">
-                <p >reservas que no llegaron: </p>
-                <p className="badge bg-bianco fs-6">{reservationsGone}</p>
-              </div>
-          </div> */}
             {reservations.map((reservation, index) => 
                 <Single 
                   key={index} hour={time} 

@@ -11,12 +11,13 @@ from '../../services/restaurantService'
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup'
-
+import dayjs from 'dayjs'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useAuth} from '../../context/AuthContext';
 
 export default function Form({times, reservation, time, selectedDate} = {reservation: false, time: ''}) {
+    const [editable, setEditable] = useState(true)
     const [editedPax, setEditedPax] = useState(0)
     const [hour, setHour] = useState(0)
     const [paxLimit, setPaxLimit] = useState('')
@@ -121,9 +122,6 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
                 newLimit
             })
         }
-
-
-
    
         if(reservation){
             let previousHour = localStorage.getItem('hour')
@@ -158,7 +156,13 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         .then(response =>{
             setCode(response.code)
         })
-    }, [])
+
+        if(dayjs(selectedDate).isBefore(dayjs().locale('cr').format('YYYY-MM-DD'))){
+            setEditable(false)
+        }
+
+        
+    }, [selectedDate])
 
 
     useEffect(()=>{
@@ -192,7 +196,6 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
         }
 
     }
-
 
     useEffect(()=>{
         if(hour !== 0 && hour !== undefined){
@@ -286,9 +289,14 @@ export default function Form({times, reservation, time, selectedDate} = {reserva
             </div>
 
             {reservation ? 
-            <button type="submit" className="btn bg-neutral fw-bold btn-block btn-lg">
-                Editar reserva
-            </button>
+             editable ?
+                <button type="submit" className="btn bg-neutral fw-bold btn-block btn-lg">
+                    Editar reserva
+                </button>
+                :
+                <button disabled className="btn bg-warn fw-bold btn-block btn-lg">
+                    No puedes editar reservas pasadas
+                </button>
             :
             <button type="submit" className="btn bg-second fw-bold btn-block btn-lg">
                 Agregar reserva
