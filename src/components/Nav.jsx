@@ -1,10 +1,10 @@
 import React from 'react'
 import {useAuth} from '../context/AuthContext'
 import logo from '../logo.png'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 export default function Nav() {
-
+    const history = useHistory()
     const {currentUser, logout} = useAuth()
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-ligh d-flex align-items-center justify-content-between p-2">
@@ -18,7 +18,7 @@ export default function Nav() {
             </div>
             <div>
                 {currentUser !== null ? 
-                    <p onClick={() => logout()} className="fs-3">
+                    <p onClick={() => logout(history)} className="fs-3" style={{cursor: 'pointer'}}>
                         <i className="fa fa-sign-out-alt"></i>
                     </p>
                     : null

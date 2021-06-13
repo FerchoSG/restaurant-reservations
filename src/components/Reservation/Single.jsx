@@ -1,5 +1,6 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom'
+import {useAuth} from '../../context/AuthContext'
 import { updatePaxArrived, updatePaxPendingCounter, updateReservationStatus} from '../../services/restaurantService'
 
 const statusColors = {
@@ -9,17 +10,24 @@ const statusColors = {
 }
 
 export default function Single({reservation, deleteReservation, hour}) {
-
-
     const location = useLocation()
     const history = useHistory()
     const [status, setStatus] = useState(reservation.status || 'pendiente')
+    const [role, setRole] = useState('')
+    const { currentUser } = useAuth()
 
     const saveInLocalStorage = () => {
         localStorage.setItem(reservation.id, JSON.stringify(reservation))
         localStorage.setItem('backTo', location.pathname)
         localStorage.setItem('hour', hour)
     }
+
+    useEffect(() => {
+        if(currentUser){
+            let role = currentUser.email.split('@')[0] !== 'recepcion' ? 'restaurant' : 'recepcion';
+            setRole(role)
+        }
+    }, [currentUser])
 
     const navigateToDeleteView = () => {
         saveInLocalStorage()
@@ -69,28 +77,34 @@ export default function Single({reservation, deleteReservation, hour}) {
                 <i className="fas fa-times"></i>
             </button>
             <div className="btn-group  dropup" style={{position: 'absolute', bottom: '-5px', right: '-5px', zIndex: 2}}>
+            {
+                role === 'restaurant' ?
             <button 
                 className="btn btn-sm bg-nero dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                 >
                 <i className="fas fa-cog"></i>
-            </button>
-            <ul className="dropdown-menu shadow status-menu border">
-                <div className="m-1" style={{minHeight: '8rem'}}>
-                <h5 className="text-center">Estado</h5>
-                <li >
-                    <button 
-                        onClick={ChangeStatus}
-                        data-status="pendiente"
-                        className="dropdown-item btn mb-2 bg-bianco">Pendiente</button>
-                </li>
-                <li>
-                    <button 
-                        onClick={ChangeStatus}
-                        data-status="ya llegó"
-                        className="dropdown-item btn mb-2 bg-light-g" >Ya llegó</button>
-                </li>
-                </div>
-            </ul>
+            </button> :null
+            }
+            {
+                role === 'restaurant' ?
+                <ul className="dropdown-menu shadow status-menu border">
+                    <div className="m-1" style={{minHeight: '8rem'}}>
+                    <h5 className="text-center">Estado</h5>
+                    <li >
+                        <button 
+                            onClick={ChangeStatus}
+                            data-status="pendiente"
+                            className="dropdown-item btn mb-2 bg-bianco">Pendiente</button>
+                    </li>
+                    <li>
+                        <button 
+                            onClick={ChangeStatus}
+                            data-status="ya llegó"
+                            className="dropdown-item btn mb-2 bg-light-g" >Ya llegó</button>
+                    </li>
+                    </div>
+                </ul> : null
+            }
 
             </div>
 

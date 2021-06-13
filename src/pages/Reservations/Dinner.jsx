@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import Nav from '../../components/Nav'
 import List from '../../components/Reservation/List';
 import useDate from '../../hooks/useDate';
 import { db } from './../../services/firebase';
 import CustomDatePicker from '../../components/CustomDatePicker';
 import {checkIfCounterOrCreate} from '../../services/restaurantService';
+import {useAuth} from '../../context/AuthContext';
 
 export default function Dinner() {
     const [times, setTimes] = useState([])
@@ -14,7 +15,8 @@ export default function Dinner() {
     const [pendingPax, setPendingPax] = useState(0)
     const location = useLocation()
     const typeOfMeal = location.pathname.split('/')[1]
-
+    const { currentUser } = useAuth()
+    const history = useHistory()
     useEffect(()=>{
         let isMounted = true;
         if(isMounted){
@@ -25,9 +27,15 @@ export default function Dinner() {
         }
 
         return () => {isMounted = false}
-        
     // eslint-disable-next-line
     },[])
+
+    useEffect(() => {
+        if(!currentUser){
+            history.push('/login')
+        }
+        // eslint-disable-next-line
+    }, [currentUser])
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
