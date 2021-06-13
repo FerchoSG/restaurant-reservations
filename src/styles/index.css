@@ -109,3 +109,10 @@ code {
 .border-warn{
   border: 4px solid var(--warn) !important;
 }
+
+.main-b{
+  background-image: url(../images/pattern-bg.jpg) !important;
+  background-position: center !important;
+  /* background-repeat: repeat !important; */
+  background-size: 25% !important;
+}

@@ -52,20 +52,16 @@ export async function getDefaultPaxLImit() {
 
 export async function createReservation({date, data, hour, typeOfMeal, currentUser}){
     data.account = currentUser.email
-    // if(data.status === undefined){
-    //     data.status = 'pendiente'
-    // }
     const defaultPaxLimit = await getDefaultPaxLImit()
     await checkIfCounterOrCreate({date, mealTime: typeOfMeal})
-    await db
-        .collection(date)
-        .doc(typeOfMeal)
-        .collection(hour)
-        .doc()
-        .set(data);
-
+    await db.collection(date)
+    .doc(typeOfMeal)
+    .collection(hour)
+    .doc()
+    .set(data);
+    
     const limit = await db.collection(date)
-        .doc(typeOfMeal)
+    .doc(typeOfMeal)
         .collection(hour)
         .doc('limit')
         .get();
@@ -76,9 +72,10 @@ export async function createReservation({date, data, hour, typeOfMeal, currentUs
             .collection(hour)
             .doc('limit')
             .set(defaultPaxLimit);
-    }
+        }
         updateReservationCounter({date, data, hour, typeOfMeal})
-}
+        updatePaxPendingCounter({date, pax: data.pax, mealTime: typeOfMeal})
+    }
 
 export async function updateReservationStatus({date, data, hour, typeOfMeal}){
     await db
@@ -88,7 +85,7 @@ export async function updateReservationStatus({date, data, hour, typeOfMeal}){
     .doc(data.id)
     .update(data)
 }
-export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour, previousPax}){
+export async function updateReservation({date, data, hour, typeOfMeal, id, previousHour, previousPax, currentUser}){
     await db
         .collection(date)
         .doc(typeOfMeal)
@@ -97,10 +94,12 @@ export async function updateReservation({date, data, hour, typeOfMeal, id, previ
         .delete()
     updatePaxArrived({date, pax: data.pax, mealTime: typeOfMeal})
     updatePaxArrived({date, pax: -previousPax, mealTime: typeOfMeal})
+    updatePaxPendingCounter({date, pax: -previousPax, mealTime: typeOfMeal})
     let reservationsCounter = await getReservationsCounter({date, typeOfMeal, time: previousHour})
     await substractPaxDeletedFromCounter({date, typeOfMeal, hour: previousHour, pax: previousPax, reservationsCounter: reservationsCounter.data})
 
-    createReservation({date, data, hour, typeOfMeal})
+    data.status = 'pendiente'
+    createReservation({date, data, hour, typeOfMeal, currentUser})
 }
 const substractPaxDeletedFromCounter = async ({date, typeOfMeal, hour, pax, reservationsCounter})=>{
     const counter = await db
@@ -224,6 +223,7 @@ export async function deleteReservation ({typeOfMeal, hour, selectedDate, reserv
     await addReservationToDeleted({reservation, date: selectedDate, hour, typeOfMeal})
 
     updatePaxArrived({date: selectedDate, mealTime: typeOfMeal, pax: -reservation.pax})
+    updatePaxPendingCounter({date: selectedDate, mealTime: typeOfMeal, pax: -reservation.pax})
 }
 async function addReservationToDeleted({reservation, date, hour, typeOfMeal}){
     const newTypeOfMeal = `${typeOfMeal}Deleted`
@@ -268,19 +268,49 @@ export async function updatePaxArrived({date, pax, mealTime}){
 }
 
 export async function checkIfCounterOrCreate({date, mealTime}){
-    let currentCounter = await db.collection(date)
+    let paxArrivedCounter = await db.collection(date)
     .doc(mealTime)
     .collection('counter')
     .doc('paxArrived')
     .get()
 
-    if(!currentCounter.exists){
+    if(!paxArrivedCounter.exists){
         db.collection(date)
             .doc(mealTime)
             .collection('counter')
             .doc('paxArrived')
             .set({data: 0})
     }
+    let paxPendingCounter = await db.collection(date)
+    .doc(mealTime)
+    .collection('counter')
+    .doc('paxPending')
+    .get()
+
+    if(!paxPendingCounter.exists){
+        db.collection(date)
+            .doc(mealTime)
+            .collection('counter')
+            .doc('paxPending')
+            .set({data: 0})
+    }
+}
+
+async function updatePaxPendingCounter({date, pax, mealTime}){
+    let currentCounter = await db.collection(date)
+    .doc(mealTime)
+    .collection('counter')
+    .doc('paxPending')
+    .get()
+
+    let {data} = currentCounter.data()
+    let updatedCounter = data + pax > 0 ? data + pax : 0;
+    
+    await db.collection(date)
+    .doc(mealTime)
+    .collection('counter')
+    .doc('paxPending')
+    .set({data: updatedCounter})
 }
 
 export async function getAccessCode(){

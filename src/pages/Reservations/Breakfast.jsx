@@ -11,6 +11,7 @@ export default function Breakfast() {
     const [times, setTimes] = useState([])
     const {selectedDate, setSelectedDate} = useDate()
     const [paxArrived, setPaxArrived] = useState(0)
+    const [pendingPax, setPendingPax] = useState(0)
     const location = useLocation()
     const typeOfMeal = location.pathname.split('/')[1]
 
@@ -35,12 +36,13 @@ export default function Breakfast() {
         localStorage.setItem('selectedDate',selectedDate)
 
         if(selectedDate){
-           getArrivedCounter()
+           getArrivedPaxCounter()
+           getPendingPaxCounter()
         }
         // eslint-disable-next-line
     },[selectedDate])
 
-    const getArrivedCounter = async () => {
+    const getArrivedPaxCounter = async () => {
         await checkIfCounterOrCreate({date: selectedDate, mealTime: typeOfMeal})
     
         db.collection(selectedDate)
@@ -51,6 +53,20 @@ export default function Breakfast() {
             if(querySnapshot.exists){
                 let paxArrived = querySnapshot.data()
                 setPaxArrived(paxArrived.data)
+            }
+        }))
+    }
+    const getPendingPaxCounter = async () => {
+        await checkIfCounterOrCreate({date: selectedDate, mealTime: typeOfMeal})
+    
+        db.collection(selectedDate)
+        .doc(typeOfMeal)
+        .collection('counter')
+        .doc('paxPending')
+        .onSnapshot((querySnapshot =>{
+            if(querySnapshot.exists){
+                let paxArrived = querySnapshot.data()
+                setPendingPax(paxArrived.data)
             }
         }))
     }
@@ -65,18 +81,28 @@ export default function Breakfast() {
                     <Link to='/' className="btn bg-nero">Atras</Link>
                 </div>
             </div>
-            <div className="d-flex justify-content-center align-items-center gap-4 mb-3">
-                    <div className="btn btn-sm bg-nero">
+            <div className="container col-md-3 col-6 mb-3">
+            <CustomDatePicker
+                selectedDate={selectedDate}
+                handleDateChange={handleDateChange}
+            />
+
+            </div>
+            <div 
+                className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4 mb-3 b-ody">
+                    <div className="btn btn-sm bg-nero p-3">
                         ya llegarón
-                        <span className="badge bg-bianco mx-2" style={{fontSize: '.9rem'}}>
+                        <span className="badge bg-bianco mx-2" style={{fontSize: '1.1rem'}}>
                             {paxArrived}
                         </span>
                         pax
                     </div>
-                <CustomDatePicker
-                    selectedDate={selectedDate}
-                    handleDateChange={handleDateChange}
-                />
+                    <div className="btn btn-sm bg-neutral p-3">
+                        <span className="badge bg-bianco mx-2" style={{fontSize: '1.1rem'}}>
+                            {pendingPax}
+                        </span>
+                        pax pendientes
+                    </div>
             </div>
             {times.map((time, index) =>
                   <div key={index} className="d-flex align-items-center mb-3 p-2">
