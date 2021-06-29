@@ -9,6 +9,7 @@ import { DateRangePicker } from 'react-date-range';
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
+import ES from '../../services/es.json'
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -24,6 +25,8 @@ export default function Admin() {
     const [dates, setDates] = useState([])
     const [loading, setLoading] = useState(false)
     const [mealTime, setMealTime] = useState('breakfast')
+    const [mealtimes, setMealtimes] = useState([])
+    const [restaurant, setRestaurant] = useState('')
    
     const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -31,7 +34,7 @@ export default function Admin() {
     
     const exportToCSV = async  () => {
         setLoading(true);
-        const docs = await getall(dates, mealTime)
+        const docs = await getall({dates, mealTime, restaurant})
         let startDate = dayjs(dateRange[0].startDate).locale('cr').format('YYYY-MM-DD')
         let endDate = dayjs(dateRange[0].endDate).locale('cr').format('YYYY-MM-DD')
         let time = mealTime === 'breakfast' ? 'desayuno' : 'cena';
@@ -51,6 +54,12 @@ export default function Admin() {
         getDates(dateRange[0].startDate, dateRange[0].endDate)
 
     }, [dateRange])
+    useEffect(() => {
+        if(restaurant){
+            restaurant === 'Italiano' ? setMealtimes(['lunch', 'dinner']) : setMealtimes(['breakfast', 'dinner'])
+        }
+
+    }, [restaurant])
 
     function getDates(startDate, stopDate) {
         const dateArray = [];
@@ -61,6 +70,14 @@ export default function Admin() {
             currentDate = currentDate.add(1,'day')
         }
         setDates(dateArray)
+    }
+
+    const handleMealtimechange = (mealtime)=>{
+        setMealTime(mealtime)
+    }
+
+    const handleRestaurantchange = (restaurant)=>{
+        setRestaurant(restaurant)
     }
 
     return (
@@ -76,20 +93,28 @@ export default function Admin() {
                         ranges={dateRange}
                     />
 
-                    <div className="mb-3">
-                        <div className="form-check form-check-inline">
-                            <input 
-                                className="form-check-input" type="radio" name="inlineRadioOptions" checked={mealTime === 'breakfast'} 
-                                id="inlineRadio1" onChange={({target}) => setMealTime(target.value) } value="breakfast"/>
-                            <label className="form-check-label" htmlFor="inlineRadio1">Desayuno</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input 
-                                className="form-check-input" type="radio" name="inlineRadioOptions" checked={mealTime === 'dinner'}
-                                id="inlineRadio2" value="dinner" onChange={({target}) => setMealTime(target.value) } />
-                            <label className="form-check-label" htmlFor="inlineRadio2">Cena</label>
-                        </div>
+                    <section className="d-flex gap-4">
+                    <div className="mb-3 form-group">
+                        <label htmlFor="restaurant">Restaurante</label>
+                        <select name="restaurant" id="restaurant" className="form-select" 
+                        onChange={ ({target}) => handleRestaurantchange(target.value)}>
+                            <option value="">Elige un restaurante</option>
+                            <option value="Ti-Cain">Ti-Cain</option>
+                            <option value="Italiano">Italiano</option>
+                        </select>
                     </div>
+                    <div className="mb-3 form-group">
+                        <label htmlFor="mealtime">Tiempo de comida</label>
+                        <select name="mealtime" id="mealtime" className="form-select" 
+                        onChange={ ({target}) => handleMealtimechange(target.value)}>
+                            <option value="">Elige un tiempo de comida</option>
+                            {mealtimes.map((mealtime, index) => {
+                                return <option key={index} value={mealtime}> {ES[mealtime]} </option>
+                            })}
+                        </select>
+                    </div>
+                    </section>
+                    
                         <button
                             disabled={loading} 
                             className="btn bg-light-g btn-lg w-50 " onClick={exportToCSV}>

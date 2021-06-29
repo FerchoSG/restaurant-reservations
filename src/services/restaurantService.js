@@ -1,8 +1,10 @@
 import { db } from "./firebase";
 
-export async function getall(dates, mealTime){
+export async function getall({dates, mealTime, restaurant}){
     let times = await getSchedules(mealTime)
 
+    console.log({dates, mealTime, restaurant})
+    console.log(times)
     let dayTime = mealTime === 'breakfast' ? 'am' : 'pm'
 
     let docs = []
@@ -10,8 +12,11 @@ export async function getall(dates, mealTime){
         times.data.map(async (time) => {
             let mealTimeDocs = await 
                     db.collection(date)
-                    .doc(mealTime)
-                    .collection(time).get()
+                    .doc(restaurant)
+                    .collection(mealTime)
+                    .doc(time)
+                    .collection('reservations')
+                    .get()
             
             mealTimeDocs.forEach(mealTimeDoc => {
                 if(mealTimeDoc.id !== 'limit' && mealTimeDoc.id !== 'reservation-counter'){
@@ -25,6 +30,7 @@ export async function getall(dates, mealTime){
                         'fecha de creacion': date,
                         'hora': `${time[0]}:${time[1]}${time[2]} ${dayTime}`,
                         'usuario': newDoc.account,
+                        'restaurante': restaurant
                     }
                     docs.push(formattedDoc)
                 }
