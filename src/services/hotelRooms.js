@@ -15,6 +15,8 @@ export const multiSelectRooms = [
     {value: '101', label: '101'},{value: '102', label: '102'},{value: '103', label: '103'},{value: '104', label: '104'},
     {value: '105', label: '105'},{value: '106', label: '106'},{value: '107', label: '107'},{value: '108', label: '108'},
     {value: '109', label: '109'},{value: '110', label: '110'},{value: '111', label: '111'},{value: '112', label: '112'},
+    {value: '121', label: '121'},{value: '122', label: '122'},{value: '123', label: '123'},{value: '124', label: '124'},
+    {value: '125', label: '125'},{value: '126', label: '126'},
     {value: '201', label: '201'},{value: '202', label: '202'},{value: '203', label: '203'},{value: '204', label: '204'},
     {value: '205', label: '205'},{value: '206', label: '206'},{value: '207', label: '207'},{value: '208', label: '208'},
     {value: '209', label: '209'},{value: '210', label: '210'},{value: '211', label: '211'},{value: '212', label: '212'},
