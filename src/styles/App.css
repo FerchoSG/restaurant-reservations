@@ -220,3 +220,23 @@ ul.dropdown-menu.status-menu{
   font-weight: bold;
   font-size: 1rem;
 }
+
+.restaurant__card.italiano{
+  background-image: url(../images/italy-flag.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-origin: center;
+  background-position: center;
+}
+.restaurant__card.ticain{
+  background-image: url(../images/Costa_Rica_Flag.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-origin: center;
+  background-position: center;
+  /* background-attachment: fixed; */
+}
+
+.restaurant__card-text.italiano{
+  color: var(--nero)
+}

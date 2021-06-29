@@ -27,14 +27,14 @@ export default function Home() {
                 <section className="d-flex flex-column flex-wrap flex-md-row container m-auto p-4 gap-2">
                     {
                         RESTAURANTS.map((restaurant, index) => (
-                            <article className={`shadow rounded col text-light restaurant__card ${bg[index]}`}>
-                                <h3 className="display-6 text-center"> {restaurant} </h3>
+                            <article className={`shadow rounded col text-light restaurant__card ${bg[index]} ${index === 1 ? 'italiano' : 'ticain'}`} >
+                                <h3 className={`restaurant__card-text ${index === 1 ? 'italiano' : null} display-6 text-center`}> {restaurant} </h3>
                                 <div className="restaurant__card-content">
                                     {
                                         MEALTIMES[restaurant].map(mealTime => (
                                             <Link
                                                 to={`${restaurant}/${ES[mealTime]}`} 
-                                                className={`bg-bianco`}> {ES[mealTime]} </Link>
+                                                className={`bg-bianco shadow-lg border border-1`}> {ES[mealTime]} </Link>
                                         ))
                                     }
                                 </div>
