@@ -193,3 +193,30 @@ ul.dropdown-menu.status-menu{
     -webkit-transform: scaleY(1.0);
   }
 }
+
+.restaurant__card{
+  position: relative;
+  padding: 6rem;
+}
+
+.restaurant__card-content{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* gap: 1rem; */
+}
+
+.restaurant__card-content a{
+  width: 50%;
+  text-decoration: none;
+  border: none;
+  border-radius: 2px;
+  margin: 0 .1rem .2rem;
+  padding: .6rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}

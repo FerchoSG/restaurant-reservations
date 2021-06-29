@@ -6,17 +6,19 @@ import { db } from '../../services/firebase'
 
 export default function Details() {
     const { id } = useParams()
-    const backTo = localStorage.getItem('backTo')
     const reservation = JSON.parse(localStorage.getItem(id))
     const [times, setTimes] = useState([])
     const selectedDate = localStorage.getItem('selectedDate')
     let history = useHistory()
+    const restaurant = localStorage.getItem('restaurant')
+    const mealtime = localStorage.getItem('mealtime')
 
     useEffect(()=>{
-        const typeOfMeal = backTo.split('/')[1]
-        db.collection('schedules').doc(typeOfMeal).onSnapshot(querySnapshot=>{
-            const { data } = querySnapshot.data()
-            setTimes(data)
+        db.collection('restaurants').doc(restaurant).collection('schedules').doc(mealtime).onSnapshot(querySnapshot=>{
+            if(querySnapshot.exists){
+                const {data}  = querySnapshot.data()
+                setTimes(data)
+            }   
         })
     // eslint-disable-next-line
     },[])

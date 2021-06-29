@@ -82,6 +82,9 @@ code {
 .outline-bianco{
   border:1px solid var(--bianco) !important
 }
+.outline-nero{
+  border:1px solid var(--nero) !important
+}
 
 
 .border-main{

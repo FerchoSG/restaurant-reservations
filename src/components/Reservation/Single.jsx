@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import { Link, useLocation, useHistory } from 'react-router-dom'
+import { Link, useLocation, useHistory, useParams } from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
 import { updatePaxArrived, updatePaxPendingCounter, updateReservationStatus} from '../../services/restaurantService'
-
+import EN from '../../services/en.json'
 const statusColors = {
     "pendiente": "bianco",
     "ya llegó": "light-g",
@@ -11,14 +11,19 @@ const statusColors = {
 
 export default function Single({reservation, deleteReservation, hour}) {
     const location = useLocation()
+    const params = useParams()
     const history = useHistory()
     const [status, setStatus] = useState(reservation.status || 'pendiente')
     const [role, setRole] = useState('')
     const { currentUser } = useAuth()
+    const mealtime = EN[params.mealtime]
+    const restaurant = params.restaurant
 
     const saveInLocalStorage = () => {
         localStorage.setItem(reservation.id, JSON.stringify(reservation))
         localStorage.setItem('backTo', location.pathname)
+        localStorage.setItem('restaurant', restaurant)
+        localStorage.setItem('mealtime', mealtime)
         localStorage.setItem('hour', hour)
     }
 
@@ -40,18 +45,16 @@ export default function Single({reservation, deleteReservation, hour}) {
         setStatus(status);
 
         if(reservation.status !== status){
-
             reservation.status = status;
-            let typeOfMeal = location.pathname.split('/')[1]
             let date = localStorage.getItem('selectedDate')
     
-            updateReservationStatus({date, data: reservation, hour, typeOfMeal})
+            updateReservationStatus({date, data: reservation, hour, mealtime, restaurant})
             if(status === 'pendiente'){
-                updatePaxArrived({date, pax: -reservation.pax, mealTime: typeOfMeal})
-                updatePaxPendingCounter({date, pax: reservation.pax, mealTime: typeOfMeal})
+                updatePaxArrived({date, pax: -reservation.pax, mealtime, restaurant})
+                updatePaxPendingCounter({date, pax: reservation.pax, mealtime, restaurant})
             }else if(status === 'ya llegó'){
-                updatePaxArrived({date, pax: reservation.pax, mealTime: typeOfMeal})
-                updatePaxPendingCounter({date, pax: -reservation.pax, mealTime: typeOfMeal})
+                updatePaxArrived({date, pax: reservation.pax, mealtime, restaurant})
+                updatePaxPendingCounter({date, pax: -reservation.pax, mealtime, restaurant})
             }
         }
 

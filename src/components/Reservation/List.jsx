@@ -1,39 +1,44 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import { db } from '../../services/firebase';
 import {updatePaxLimit, getDefaultPaxLImit} from '../../services/restaurantService';
 import Single from './Single';
 import Swal from 'sweetalert2'
 import BounceSpinner from '../BounceSpinner';
+import EN from '../../services/en.json'
 
 export default function List({time, selectedDate}) {
     const [reservations, setReservations] = useState([])
     const [reservationsCounter, setReservationsCounter] = useState(0)
     const [reservationsLimit, setReservationsLimit] = useState(0)
     const [loading, setLoading] = useState(false)
-    const location = useLocation()
-    const locationName = location.pathname.split('/')[1]
+    const params = useParams()
+    const mealtime = EN[params.mealtime]
+    const restaurant = params.restaurant
 
     const deleteReservation = async (id, pax) => {
-      const defaultPaxLimit = await getDefaultPaxLImit()
+      const defaultPaxLimit = await getDefaultPaxLImit({restaurant, mealtime})
       let newLimit = reservationsLimit - pax;
-      if(reservationsLimit > defaultPaxLimit.data && newLimit > defaultPaxLimit.data){
+      if(reservationsLimit > defaultPaxLimit && newLimit > defaultPaxLimit){
         updatePaxLimit({
           date: selectedDate,
-          typeOfMeal: locationName, hour: time, 
-          newLimit
+          mealtime, hour: time, 
+          newLimit, restaurant
         })
-      }else if(newLimit < defaultPaxLimit.data){
+      }else if(newLimit < defaultPaxLimit){
         updatePaxLimit({
           date: selectedDate,
-          typeOfMeal: locationName, hour: time, 
-          newLimit: defaultPaxLimit.data
+          mealtime, hour: time, 
+          newLimit: defaultPaxLimit,
+          restaurant
         })
       }
       
       db.collection(selectedDate)
-      .doc(locationName)
-      .collection(time).doc(id).delete()
+      .doc(restaurant)
+      .collection(mealtime)
+      .doc(time)
+      .collection('reservations').doc(id).delete()
 
       substractPaxDeletedFromCounter(pax)
     }
@@ -41,23 +46,25 @@ export default function List({time, selectedDate}) {
     const substractPaxDeletedFromCounter = (pax)=>{
       db
       .collection(selectedDate)
-      .doc(locationName)
-      .collection(time)
-      .doc('reservation-counter')
+      .doc(restaurant)
+      .collection(mealtime)
+      .doc(time)
+      .collection('counter')
+      .doc('reservations')
       .update({data: Number(reservationsCounter) - Number(pax)})
     }
 
     const getReservations = async () => {
       setLoading(true)
         db.collection(selectedDate)
-          .doc(locationName)
-          .collection(time)
+          .doc(restaurant)
+          .collection(mealtime)
+          .doc(String(time))
+          .collection('reservations')
           .onSnapshot((querySnapshot) => {
             const docs = [];
             querySnapshot.forEach((doc) => {
-              if(doc.id !== 'reservation-counter' && doc.id !== 'limit'){
                 docs.push({ ...doc.data(), id: doc.id });
-              }
             });
             // eslint-disable-next-line 
             setReservations(docs)
@@ -66,21 +73,23 @@ export default function List({time, selectedDate}) {
       }
 
     const getReservationsLimit = async ()=>{
-      const defaultPaxLimit = await getDefaultPaxLImit()
+      const defaultPaxLimit = await getDefaultPaxLImit({restaurant, mealtime})
       db.collection(selectedDate)
-      .doc(locationName)
-      .collection(time)
+      .doc(restaurant)
+      .collection(mealtime)
       .doc('limit')
       .onSnapshot((querySnapshot) => {
         const limit = querySnapshot.data()
-        limit ? setReservationsLimit(limit.data) : setReservationsLimit(defaultPaxLimit.data)
+        limit ? setReservationsLimit(limit.data) : setReservationsLimit(defaultPaxLimit)
       })
     }
     const getReservationsCounter = ()=>{
       db.collection(selectedDate)
-      .doc(locationName)
-      .collection(time)
-      .doc('reservation-counter')
+      .doc(restaurant)
+      .collection(mealtime)
+      .doc(String(time))
+      .collection('counter')
+      .doc('reservations')
       .onSnapshot((querySnapshot) => {
         const counter = querySnapshot.data()
         counter ? setReservationsCounter(counter.data) : setReservationsCounter(0)
@@ -105,7 +114,8 @@ export default function List({time, selectedDate}) {
     useEffect(()=>{
         getReservations()
         getReservationsCounter()
-        getReservationsLimit()
+        if(mealtime !== 'lunch')
+          getReservationsLimit()
 
         
         // eslint-disable-next-line
@@ -123,21 +133,25 @@ export default function List({time, selectedDate}) {
             <div  
               className="d-flex  justify-content-between align-items-center gap-2 rounded" 
               style={{position: 'absolute', top: '-4px', left: '0'}} >
-              <button className="btn bg-nero fw-bold" style={{padding: '5px', margin: 0}}>
-                Limite <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
-                  {reservationsLimit}
-                </span>
-              </button>
+                { mealtime !== 'lunch' ?
+                  <button className="btn bg-nero fw-bold" style={{padding: '5px', margin: 0}}>
+                    Limite <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
+                      {reservationsLimit}
+                    </span>
+                  </button> : null
+                }
               <button className="btn bg-second fw-bold" style={{padding: '5px', margin: 0}}>
                 Reservados <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
                   { reservationsCounter }
                 </span>
               </button>
-              <button className="btn bg-main fw-bold" style={{padding: '5px', margin: 0}}>
-                Disponible <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
-                  { (reservationsLimit - reservationsCounter) < 0 ? 0 :  reservationsLimit - reservationsCounter }
-                </span>
-              </button>
+              { mealtime !== 'lunch' ?
+                <button className="btn bg-main fw-bold" style={{padding: '5px', margin: 0}}>
+                  Disponible <span className="badge bg-bianco" style={{fontSize: '.9rem'}}>
+                    { (reservationsLimit - reservationsCounter) < 0 ? 0 :  reservationsLimit - reservationsCounter }
+                  </span>
+                </button> : null
+              }
             </div>
         </div>
     )
