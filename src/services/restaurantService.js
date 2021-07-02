@@ -1,44 +1,109 @@
 import { db } from "./firebase";
 
+const formatHour = (hour, mealtime) =>{
+    let currentTime = mealtime === 'breakfast' ? 'am' : 'pm'
+    if(hour.length === 3)
+        return `${hour[0]}:${hour[1]}${hour[2]}${currentTime}`
+    if(hour.length === 4)
+        return `${hour[0]}${hour[1]}:${hour[2]}${hour[3]}${currentTime}`
+}
+
 export async function getall({dates, mealTime, restaurant}){
-    let times = await getSchedules(mealTime)
 
-    console.log({dates, mealTime, restaurant})
-    console.log(times)
-    let dayTime = mealTime === 'breakfast' ? 'am' : 'pm'
+    if(mealTime === 'lunch'){
+        const schedules = await getLunchSchedules(dates)
+        let docs = []
+        setTimeout(()=>{
+            schedules.map(schedule =>
+                schedule.data.map(async (time) => {
+                    let timeString = String(time)
+                    let mealTimeDocs = await 
+                            db.collection(schedule.date)
+                            .doc(restaurant)
+                            .collection(mealTime)
+                            .doc(timeString)
+                            .collection('reservations')
+                            .get()
 
-    let docs = []
-    dates.map(date =>
-        times.data.map(async (time) => {
-            let mealTimeDocs = await 
-                    db.collection(date)
-                    .doc(restaurant)
-                    .collection(mealTime)
-                    .doc(time)
-                    .collection('reservations')
-                    .get()
-            
-            mealTimeDocs.forEach(mealTimeDoc => {
-                if(mealTimeDoc.id !== 'limit' && mealTimeDoc.id !== 'reservation-counter'){
-                    let newDoc = mealTimeDoc.data()
-                    let formattedDoc = {
-                        'detalles': newDoc.details,
-                        'pax': newDoc.pax,
-                        'estado': newDoc.status,
-                        'habitacion': newDoc.room,
-                        'reservado por': newDoc.bookedby,
-                        'fecha de creacion': date,
-                        'hora': `${time[0]}:${time[1]}${time[2]} ${dayTime}`,
-                        'usuario': newDoc.account,
-                        'restaurante': restaurant
+                            mealTimeDocs.forEach(mealTimeDoc => {
+                                console.log(mealTimeDoc)
+                                if(mealTimeDoc.id !== 'limit' && mealTimeDoc.id !== 'reservation-counter'){
+                                    let newDoc = mealTimeDoc.data()
+                                    let formattedDoc = {
+                                        'detalles': newDoc.details,
+                                        'pax': newDoc.pax,
+                                        'estado': newDoc.status,
+                                        'habitacion': newDoc.room,
+                                        'reservado por': newDoc.bookedby,
+                                        'fecha de creacion': schedule.date,
+                                        'hora': formatHour(timeString, mealTime),
+                                        'usuario': newDoc.account,
+                                        // 'restaurante': restaurant
+                                    }
+                                    docs.push(formattedDoc)
+                                }
+                            })
+                        })
+            )
+        },1000)
+        return docs
+    }else{
+        let times = await getSchedules(mealTime)
+    
+        let docs = []
+        dates.map(date =>
+            times.data.map(async (time) => {
+                let timeString = String(time)
+                let mealTimeDocs = await 
+                        db.collection(date)
+                        .doc(restaurant)
+                        .collection(mealTime)
+                        .doc(timeString)
+                        .collection('reservations')
+                        .get()
+                
+                mealTimeDocs.forEach(mealTimeDoc => {
+                    if(mealTimeDoc.id !== 'limit' && mealTimeDoc.id !== 'reservation-counter'){
+                        let newDoc = mealTimeDoc.data()
+                        let formattedDoc = {
+                            'detalles': newDoc.details,
+                            'pax': newDoc.pax,
+                            'estado': newDoc.status,
+                            'habitacion': newDoc.room,
+                            'reservado por': newDoc.bookedby,
+                            'fecha de creacion': date,
+                            'hora': formatHour(timeString, mealTime),
+                            'usuario': newDoc.account,
+                            // 'restaurante': restaurant
+                        }
+                        docs.push(formattedDoc)
                     }
-                    docs.push(formattedDoc)
-                }
+                })
             })
-        })
-    )
+        )
+    
+        return docs
 
-    return docs
+    }
+}
+
+async function getLunchSchedules(dates){
+    const schedules = []
+    await dates.map( async date =>{
+        let schedule = await db.collection(date)
+        .doc('Italiano')
+        .collection('lunch')
+        .doc('hours')
+        .get()
+
+        if(schedule.exists){
+            const {data} = schedule.data()
+            schedules.push({date, data})
+        }
+    })
+
+    return schedules
+
 }
 
 async function getSchedules(mealTime) {

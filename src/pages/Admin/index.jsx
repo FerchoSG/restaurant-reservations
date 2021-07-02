@@ -37,7 +37,7 @@ export default function Admin() {
         const docs = await getall({dates, mealTime, restaurant})
         let startDate = dayjs(dateRange[0].startDate).locale('cr').format('YYYY-MM-DD')
         let endDate = dayjs(dateRange[0].endDate).locale('cr').format('YYYY-MM-DD')
-        let time = mealTime === 'breakfast' ? 'desayuno' : 'cena';
+        let time = ES[mealTime];
         let fileName = `reporte de ${time} entre ${startDate} y ${endDate}`
 
         setTimeout(() => {
