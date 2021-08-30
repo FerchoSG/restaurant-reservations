@@ -4,7 +4,7 @@ const RESTAURANTS = [
 ]
 
 const MEALTIMES = {
-    "Ti-Cain" : ["breakfast", "dinner"],
+    "Ti-Cain" : ["breakfast","lunch", "dinner"],
     "Italiano": ["lunch", "dinner"]
 }
 
