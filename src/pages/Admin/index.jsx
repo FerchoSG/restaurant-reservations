@@ -56,7 +56,7 @@ export default function Admin() {
     }, [dateRange])
     useEffect(() => {
         if(restaurant){
-            restaurant === 'Italiano' ? setMealtimes(['lunch', 'dinner']) : setMealtimes(['breakfast', 'dinner'])
+            restaurant === 'Italiano' ? setMealtimes(['lunch', 'dinner']) : setMealtimes(['breakfast', 'lunch', 'dinner'])
         }
 
     }, [restaurant])
